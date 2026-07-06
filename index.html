@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>排行榜</title>
+  <style>
+    :root {
+      --bg: #eef3f8;
+      --card: #ffffff;
+      --card-2: #f7fbff;
+      --text: #14233b;
+      --muted: #5f6f85;
+      --line: #d9e2ec;
+      --accent: #2563eb;
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
+        "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.10), transparent 32rem),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .page {
+      width: min(960px, calc(100% - 32px));
+      margin: 32px auto;
+    }
+
+    .header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 42px);
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .leaderboard {
+      display: grid;
+      gap: 12px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 72px 1fr 96px;
+      align-items: center;
+      min-height: 86px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, var(--card), var(--card-2));
+      box-shadow: var(--shadow);
+    }
+
+    .rank {
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--text);
+    }
+
+    .id {
+      font-size: 18px;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+
+    .points {
+      justify-self: end;
+      font-size: 18px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .points span {
+      color: var(--accent);
+    }
+
+    .table-head {
+      display: grid;
+      grid-template-columns: 72px 1fr 96px;
+      padding: 0 20px 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        width: min(100% - 20px, 960px);
+        margin: 20px auto;
+      }
+
+      .row,
+      .table-head {
+        grid-template-columns: 54px 1fr 72px;
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .row {
+        min-height: 78px;
+      }
+
+      .rank,
+      .id,
+      .points {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div>
+        <h1>排行榜</h1>
+        <p class="subtitle">ID、排行與點數數量</p>
+      </div>
+    </header>
+
+    <section aria-label="排行榜">
+      <div class="table-head" aria-hidden="true">
+        <div>排行</div>
+        <div>ID</div>
+        <div style="text-align:right;">點數</div>
+      </div>
+
+      <div id="leaderboard" class="leaderboard"></div>
+    </section>
+  </main>
+
+  <script>
+    const data = [
+      { rank: 1, id: "許煒宏", points: 67 },
+      { rank: 2, id: "荳小魚", points: 47 },
+      { rank: 3, id: "I Lily", points: 20 },
+      { rank: 4, id: "燕子", points: 16 },
+      { rank: 5, id: "士林桂志龍", points: 15 },
+      { rank: 6, id: "圳峰有限公司-小王", points: 12 },
+      { rank: 7, id: "我要第一名", points: 8 },
+      { rank: 8, id: "王郁翔", points: 2 },
+      { rank: 9, id: "Usagi", points: 1 },
+      { rank: 10, id: "Hachiware", points: 1 }
+    ];
+
+    const leaderboard = document.querySelector("#leaderboard");
+
+    leaderboard.innerHTML = data.map(item => `
+      <article class="row">
+        <div class="rank">#${item.rank}</div>
+        <div class="id">${item.id}</div>
+        <div class="points"><span>${item.points}</span> 點</div>
+      </article>
+    `).join("");
+  </script>
+</body>
+</html>
