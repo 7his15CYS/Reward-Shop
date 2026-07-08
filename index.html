@@ -6,34 +6,64 @@
   <title>ICL集點活動</title>
   <style>
     :root {
-      --bg: #eef3f8;
-      --card: #ffffff;
-      --card-2: #f7fbff;
-      --text: #14233b;
-      --muted: #5f6f85;
-      --line: #d9e2ec;
-      --accent: #2563eb;
-      --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-      --radius: 18px;
+      --text: #1d2940;
+      --muted: #5c6d86;
+      --line: rgba(255, 255, 255, 0.45);
+      --accent: #6a5cff;
+      --accent-2: #4fa3ff;
+      --card: rgba(255, 255, 255, 0.82);
+      --card-2: rgba(255, 255, 255, 0.74);
+      --shadow: 0 10px 30px rgba(31, 45, 76, 0.12);
+      --radius: 20px;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html, body {
+      min-height: 100%;
+    }
+
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
         "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(37, 99, 235, 0.10), transparent 32rem),
-        var(--bg);
       color: var(--text);
+      position: relative;
+      overflow-x: hidden;
+      background: #eaf2ff;
+    }
+
+    /* 背景圖片 */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("assets/backgrounds/claw-bg.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: brightness(0.9) saturate(1.05);
+      z-index: -2;
+    }
+
+    /* 霧面遮罩，讓內容更清楚 */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(245, 249, 255, 0.72), rgba(245, 249, 255, 0.82)),
+        radial-gradient(circle at top left, rgba(255, 182, 193, 0.18), transparent 25rem),
+        radial-gradient(circle at top right, rgba(173, 216, 255, 0.18), transparent 25rem),
+        radial-gradient(circle at bottom left, rgba(255, 223, 186, 0.18), transparent 25rem);
+      z-index: -1;
     }
 
     .page {
       width: min(960px, calc(100% - 32px));
-      margin: 32px auto;
+      margin: 32px auto 40px;
     }
 
     .header {
@@ -42,18 +72,25 @@
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 18px;
+      background: rgba(255, 255, 255, 0.70);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(28px, 4vw, 42px);
+      font-size: clamp(30px, 4vw, 44px);
       letter-spacing: 0.02em;
     }
 
     .subtitle {
-      margin: 6px 0 0;
+      margin: 8px 0 0;
       color: var(--muted);
       font-size: 15px;
+      font-weight: 600;
     }
 
     .nav {
@@ -68,18 +105,28 @@
       color: var(--text);
       text-decoration: none;
       font-weight: 800;
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.72);
       border-radius: 999px;
       padding: 12px 18px;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(10px);
     }
 
     .nav a.active,
     .nav a:hover {
       color: #ffffff;
-      background: linear-gradient(135deg, var(--accent), #2f7df6);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
       border-color: transparent;
+    }
+
+    .leaderboard-wrap {
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
     }
 
     .leaderboard {
@@ -93,14 +140,15 @@
       align-items: center;
       min-height: 86px;
       padding: 18px 20px;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(255, 255, 255, 0.55);
       border-radius: var(--radius);
       background: linear-gradient(180deg, var(--card), var(--card-2));
-      box-shadow: var(--shadow);
+      box-shadow: 0 8px 22px rgba(31, 45, 76, 0.08);
+      backdrop-filter: blur(10px);
     }
 
     .rank {
-      font-weight: 800;
+      font-weight: 900;
       font-size: 20px;
       color: var(--text);
     }
@@ -114,12 +162,12 @@
     .points {
       justify-self: end;
       font-size: 18px;
-      font-weight: 850;
+      font-weight: 900;
       white-space: nowrap;
     }
 
     .points span {
-      color: var(--accent);
+      color: #4f6cff;
     }
 
     .table-head {
@@ -128,20 +176,21 @@
       padding: 0 20px 8px;
       color: var(--muted);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.08em;
     }
 
     .notice {
       margin-top: 28px;
       padding: 18px 20px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 20px;
       background: rgba(255, 255, 255, 0.68);
       color: var(--muted);
       font-size: 12px;
       line-height: 1.8;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+      backdrop-filter: blur(10px);
     }
 
     .notice-title {
@@ -158,7 +207,17 @@
     @media (max-width: 560px) {
       .page {
         width: min(100% - 20px, 960px);
-        margin: 20px auto;
+        margin: 20px auto 28px;
+      }
+
+      .header {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .leaderboard-wrap {
+        padding: 14px;
+        border-radius: 20px;
       }
 
       .row,
@@ -205,7 +264,7 @@
       <a href="shop.html">點數兌換</a>
     </nav>
 
-    <section aria-label="排行榜">
+    <section class="leaderboard-wrap" aria-label="排行榜">
       <div class="table-head" aria-hidden="true">
         <div>排行</div>
         <div>ID</div>
