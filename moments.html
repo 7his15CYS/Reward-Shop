@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>兌換花絮</title>
+  <style>
+    :root {
+      --text: #1d2940;
+      --muted: #5c6d86;
+      --line: rgba(255, 255, 255, 0.45);
+      --accent: #6a5cff;
+      --accent-2: #4fa3ff;
+      --card: rgba(255, 255, 255, 0.82);
+      --card-2: rgba(255, 255, 255, 0.74);
+      --shadow: 0 10px 30px rgba(31, 45, 76, 0.12);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
+        "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
+      color: var(--text);
+      position: relative;
+      overflow-x: hidden;
+      background: #eaf2ff;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("assets/backgrounds/claw-bg.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: brightness(0.9) saturate(1.05);
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(245, 249, 255, 0.72), rgba(245, 249, 255, 0.84)),
+        radial-gradient(circle at top left, rgba(255, 182, 193, 0.18), transparent 25rem),
+        radial-gradient(circle at top right, rgba(173, 216, 255, 0.18), transparent 25rem),
+        radial-gradient(circle at bottom left, rgba(255, 223, 186, 0.18), transparent 25rem);
+      z-index: -1;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 32px auto 56px;
+    }
+
+    .header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      background: rgba(255, 255, 255, 0.70);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 44px);
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 20px 0 26px;
+    }
+
+    .nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 800;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.72);
+      border-radius: 999px;
+      padding: 12px 18px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav a.active,
+    .nav a:hover {
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+      gap: 22px;
+      margin-bottom: 24px;
+    }
+
+    .slideshow,
+    .featured-info,
+    .moments-wrap {
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .slideshow {
+      overflow: hidden;
+      position: relative;
+      min-height: 520px;
+    }
+
+    .slide-photo {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+      display: block;
+      background: rgba(241, 247, 255, 0.70);
+    }
+
+    .slide-gradient {
+      position: absolute;
+      inset: auto 0 0;
+      min-height: 42%;
+      background: linear-gradient(transparent, rgba(20, 30, 50, 0.72));
+      pointer-events: none;
+    }
+
+    .slide-caption {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 22px;
+      color: #ffffff;
+    }
+
+    .slide-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.30);
+      font-size: 13px;
+      font-weight: 850;
+      backdrop-filter: blur(10px);
+    }
+
+    .slide-title {
+      margin: 0 0 8px;
+      font-size: clamp(24px, 3vw, 38px);
+      line-height: 1.18;
+      font-weight: 950;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .slide-desc {
+      margin: 0;
+      max-width: 720px;
+      font-size: 16px;
+      line-height: 1.65;
+      font-weight: 650;
+      opacity: 0.95;
+    }
+
+    .slide-controls {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .slide-controls button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      border-radius: 999px;
+      color: #ffffff;
+      background: rgba(20, 30, 50, 0.24);
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 900;
+      backdrop-filter: blur(10px);
+    }
+
+    .dots {
+      position: absolute;
+      left: 24px;
+      top: 22px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.48);
+      cursor: pointer;
+    }
+
+    .dot.active {
+      width: 28px;
+      background: #ffffff;
+    }
+
+    .featured-info {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .info-label {
+      display: inline-flex;
+      align-self: flex-start;
+      color: #255782;
+      background: rgba(243, 248, 255, 0.82);
+      border: 1px solid rgba(180, 211, 246, 0.78);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .info-title {
+      margin: 16px 0 10px;
+      font-size: 26px;
+      line-height: 1.25;
+      font-weight: 950;
+    }
+
+    .info-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+      font-weight: 650;
+    }
+
+    .stats {
+      display: grid;
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 16px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, var(--card), var(--card-2));
+      border: 1px solid rgba(255, 255, 255, 0.55);
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 950;
+      color: #4f6cff;
+    }
+
+    .stat-text {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .moments-wrap {
+      padding: 20px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 950;
+    }
+
+    .section-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .moments-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .moment-card {
+      overflow: hidden;
+      border-radius: 22px;
+      background: linear-gradient(180deg, var(--card), var(--card-2));
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      box-shadow: 0 8px 22px rgba(31, 45, 76, 0.08);
+    }
+
+    .moment-card img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+      background: rgba(241, 247, 255, 0.70);
+    }
+
+    .moment-body {
+      padding: 18px 18px 20px;
+    }
+
+    .moment-time {
+      display: inline-flex;
+      margin-bottom: 10px;
+      color: #4f6cff;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+
+    .moment-title {
+      margin: 0 0 8px;
+      font-size: 20px;
+      line-height: 1.3;
+      font-weight: 950;
+    }
+
+    .moment-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+      font-weight: 650;
+    }
+
+    .empty {
+      display: none;
+      text-align: center;
+      padding: 54px 20px;
+      color: var(--muted);
+      font-weight: 800;
+      border: 1px dashed rgba(255, 255, 255, 0.55);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.62);
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 940px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .slideshow,
+      .slide-photo {
+        min-height: auto;
+        height: 460px;
+      }
+
+      .moments-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 20px, 1120px);
+        margin: 20px auto 28px;
+      }
+
+      .header {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .nav a {
+        padding: 10px 14px;
+        font-size: 15px;
+      }
+
+      .slideshow,
+      .slide-photo {
+        height: 420px;
+        border-radius: 20px;
+      }
+
+      .slide-caption {
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+      }
+
+      .dots {
+        left: 18px;
+        top: 18px;
+      }
+
+      .slide-controls {
+        right: 16px;
+        top: 14px;
+      }
+
+      .featured-info,
+      .moments-wrap {
+        padding: 16px;
+        border-radius: 20px;
+      }
+
+      .moments-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .moment-card img {
+        height: 240px;
+      }
+
+      .section-head {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div>
+        <h1>兌換花絮</h1>
+        <p class="subtitle">記錄夾客成功兌換獎品的開心時刻</p>
+      </div>
+    </header>
+
+    <nav class="nav" aria-label="頁面導覽">
+      <a href="index.html">排行榜</a>
+      <a href="shop.html">點數兌換</a>
+      <a class="active" href="moments.html">兌換花絮</a>
+    </nav>
+
+    <section class="hero" aria-label="兌換照片播放區">
+      <div class="slideshow">
+        <img id="slidePhoto" class="slide-photo" src="" alt="">
+        <div class="slide-gradient"></div>
+
+        <div id="dots" class="dots" aria-label="照片切換"></div>
+
+        <div class="slide-controls">
+          <button type="button" id="prevBtn" aria-label="上一張">‹</button>
+          <button type="button" id="nextBtn" aria-label="下一張">›</button>
+        </div>
+
+        <div class="slide-caption">
+          <div id="slideTime" class="slide-time"></div>
+          <h2 id="slideTitle" class="slide-title"></h2>
+          <p id="slideDesc" class="slide-desc"></p>
+        </div>
+      </div>
+
+      <aside class="featured-info" aria-label="活動摘要">
+        <div>
+          <span class="info-label">Happy Moments</span>
+          <h2 class="info-title">每一次兌換，都是努力集點後的小小成就感</h2>
+          <p class="info-text">
+            這裡會展示夾客成功兌換獎品的照片，包含兌換時間與簡短紀錄，
+            讓大家一起分享拿到喜歡商品的開心瞬間。
+          </p>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div id="totalMoments" class="stat-number">0</div>
+            <div class="stat-text">已記錄兌換照片</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">2027/04/30</div>
+            <div class="stat-text">活動點數使用期限</div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="moments-wrap" aria-label="兌換紀錄">
+      <div class="section-head">
+        <div>
+          <h2>兌換紀錄</h2>
+          <p>依照片新增順序顯示，可自行修改時間、描述與圖片路徑。</p>
+        </div>
+      </div>
+
+      <div id="momentsGrid" class="moments-grid"></div>
+      <p id="emptyMessage" class="empty">目前尚未新增兌換照片</p>
+    </section>
+  </main>
+
+  <script>
+    const moments = [
+      {
+        time: "2026/07/09 20:15",
+        title: "成功兌換皮卡丘絨毛娃娃",
+        desc: "恭喜夾客使用活動點數成功兌換喜歡的獎品，開心合照留念！",
+        image: "assets/moments/moment-01.jpg"
+      },
+      {
+        time: "2026/07/10 18:40",
+        title: "集點兌換完成",
+        desc: "努力累積的點數換成實體獎品，滿滿成就感的一刻。",
+        image: "assets/moments/moment-02.jpg"
+      },
+      {
+        time: "2026/07/12 21:05",
+        title: "開心帶走可愛娃娃",
+        desc: "兌換完成後與獎品一起拍照，留下活動中的美好回憶。",
+        image: "assets/moments/moment-03.jpg"
+      }
+    ];
+
+    const slidePhoto = document.querySelector("#slidePhoto");
+    const slideTime = document.querySelector("#slideTime");
+    const slideTitle = document.querySelector("#slideTitle");
+    const slideDesc = document.querySelector("#slideDesc");
+    const dots = document.querySelector("#dots");
+    const prevBtn = document.querySelector("#prevBtn");
+    const nextBtn = document.querySelector("#nextBtn");
+    const momentsGrid = document.querySelector("#momentsGrid");
+    const emptyMessage = document.querySelector("#emptyMessage");
+    const totalMoments = document.querySelector("#totalMoments");
+
+    let currentIndex = 0;
+    let timer = null;
+
+    function escapeHTML(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderSlide(index) {
+      if (!moments.length) return;
+
+      const item = moments[index];
+
+      slidePhoto.src = item.image;
+      slidePhoto.alt = item.title;
+      slideTime.textContent = item.time;
+      slideTitle.textContent = item.title;
+      slideDesc.textContent = item.desc;
+
+      document.querySelectorAll(".dot").forEach((dot, dotIndex) => {
+        dot.classList.toggle("active", dotIndex === index);
+      });
+    }
+
+    function goToSlide(index) {
+      currentIndex = (index + moments.length) % moments.length;
+      renderSlide(currentIndex);
+      restartTimer();
+    }
+
+    function restartTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => {
+        goToSlide(currentIndex + 1);
+      }, 4500);
+    }
+
+    function renderDots() {
+      dots.innerHTML = moments.map((_, index) => `
+        <button
+          type="button"
+          class="dot ${index === 0 ? "active" : ""}"
+          aria-label="切換到第 ${index + 1} 張照片"
+          data-index="${index}">
+        </button>
+      `).join("");
+
+      document.querySelectorAll(".dot").forEach(dot => {
+        dot.addEventListener("click", () => {
+          goToSlide(Number(dot.dataset.index));
+        });
+      });
+    }
+
+    function renderMoments() {
+      totalMoments.textContent = moments.length;
+
+      if (!moments.length) {
+        emptyMessage.style.display = "block";
+        momentsGrid.innerHTML = "";
+        return;
+      }
+
+      emptyMessage.style.display = "none";
+
+      momentsGrid.innerHTML = moments.map(item => `
+        <article class="moment-card">
+          <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy">
+          <div class="moment-body">
+            <time class="moment-time">${escapeHTML(item.time)}</time>
+            <h3 class="moment-title">${escapeHTML(item.title)}</h3>
+            <p class="moment-desc">${escapeHTML(item.desc)}</p>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    prevBtn.addEventListener("click", () => goToSlide(currentIndex - 1));
+    nextBtn.addEventListener("click", () => goToSlide(currentIndex + 1));
+
+    renderDots();
+    renderMoments();
+    renderSlide(currentIndex);
+    restartTimer();
+  </script>
+</body>
+</html>
