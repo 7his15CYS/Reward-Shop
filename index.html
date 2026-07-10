@@ -35,7 +35,6 @@
       background: #eaf2ff;
     }
 
-    /* 背景圖片 */
     body::before {
       content: "";
       position: fixed;
@@ -48,7 +47,6 @@
       z-index: -2;
     }
 
-    /* 霧面遮罩，讓內容更清楚 */
     body::after {
       content: "";
       position: fixed;
@@ -120,7 +118,8 @@
       border-color: transparent;
     }
 
-    .leaderboard-wrap {
+    .leaderboard-wrap,
+    .records-wrap {
       background: rgba(255, 255, 255, 0.62);
       border: 1px solid var(--line);
       border-radius: 24px;
@@ -193,7 +192,8 @@
       backdrop-filter: blur(10px);
     }
 
-    .notice-title {
+    .notice-title,
+    .records-title {
       margin: 0 0 8px;
       color: var(--text);
       font-size: 14px;
@@ -202,6 +202,74 @@
 
     .notice p {
       margin: 0;
+    }
+
+    .records-wrap {
+      margin-top: 28px;
+    }
+
+    .records-title {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .records-subtitle {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .records-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.54);
+    }
+
+    .records-table th,
+    .records-table td {
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    .records-table th {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      font-weight: 900;
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    .records-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .record-id {
+      font-weight: 850;
+      color: var(--text);
+    }
+
+    .record-change {
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .record-change.plus {
+      color: #2563eb;
+    }
+
+    .record-change.minus {
+      color: #d94646;
+    }
+
+    .record-note {
+      color: var(--muted);
+      line-height: 1.5;
     }
 
     @media (max-width: 560px) {
@@ -215,7 +283,8 @@
         border-radius: 20px;
       }
 
-      .leaderboard-wrap {
+      .leaderboard-wrap,
+      .records-wrap {
         padding: 14px;
         border-radius: 20px;
       }
@@ -246,6 +315,18 @@
         font-size: 11px;
         line-height: 1.7;
         padding: 16px;
+      }
+
+      .records-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .records-table th,
+      .records-table td {
+        padding: 12px 10px;
+        font-size: 13px;
       }
     }
   </style>
@@ -285,6 +366,23 @@
         5. 活動方保留對本活動辦法之說明、調整及補充之權利；相關內容如有未盡事宜，依活動方公告為準。
       </p>
     </section>
+
+    <section class="records-wrap" aria-label="存點紀錄">
+      <h2 class="records-title">存點紀錄</h2>
+      <p class="records-subtitle">手動紀錄點數異動時間、對象與變更內容。</p>
+
+      <table class="records-table">
+        <thead>
+          <tr>
+            <th>時間</th>
+            <th>ID</th>
+            <th>點數變更</th>
+            <th>備註</th>
+          </tr>
+        </thead>
+        <tbody id="pointRecords"></tbody>
+      </table>
+    </section>
   </main>
 
   <script>
@@ -304,6 +402,46 @@
       { rank: 13, id: "Hachiware", points: 1 }
     ];
 
+    /*
+      手動新增存點紀錄的位置：
+
+      格式：
+      {
+        time: "YYYY/MM/DD HH:mm",
+        id: "會員名稱",
+        change: "+5",
+        note: "原因或備註"
+      }
+
+      加點請用 +，扣點請用 -
+    */
+    const pointLogs = [
+      {
+        time: "2026/07/10 14:11",
+        id: "Tony Liang（焜耀) ",
+        change: "+16",
+        note: "活動參與加點"
+      },
+      {
+        time: "2026/07/09 18:07",
+        id: "文嘉",
+        change: "+12",
+        note: "新增活動點數"
+      },
+      {
+        time: "2026/07/09 16:47",
+        id: "瑞玹",
+        change: "+9",
+        note: "新增活動點數"
+      },
+      {
+        time: "2026/07/08 22:43",
+        id: "許炳宏",
+        change: "+7",
+        note: "活動參與加點"
+      }
+    ];
+
     const leaderboard = document.querySelector("#leaderboard");
 
     leaderboard.innerHTML = data.map(item => `
@@ -313,6 +451,22 @@
         <div class="points"><span>${item.points}</span> 點</div>
       </article>
     `).join("");
+
+    const pointRecords = document.querySelector("#pointRecords");
+
+    pointRecords.innerHTML = pointLogs.map(log => {
+      const isMinus = String(log.change).trim().startsWith("-");
+      const changeClass = isMinus ? "minus" : "plus";
+
+      return `
+        <tr>
+          <td>${log.time}</td>
+          <td class="record-id">${log.id}</td>
+          <td class="record-change ${changeClass}">${log.change} 點</td>
+          <td class="record-note">${log.note}</td>
+        </tr>
+      `;
+    }).join("");
   </script>
 </body>
 </html>
