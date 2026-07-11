@@ -537,6 +537,20 @@
       <a href="moments.html">活動花絮</a>
     </nav>
 
+    <section class="lookup" aria-label="依代夾物代號查詢">
+      <div class="lookup-label">我夾到的是：</div>
+      <div class="code-tabs" id="codeTabs">
+        <button class="active" type="button" data-code="全部">查看全部</button>
+        <button type="button" data-code="A">A</button>
+        <button type="button" data-code="B">B</button>
+        <button type="button" data-code="C">C</button>
+        <button type="button" data-code="D">D</button>
+        <button type="button" data-code="E">E</button>
+        <button type="button" data-code="F">F</button>
+      </div>
+      <div class="result-count" id="resultCount">共 6 種對應獎品</div>
+    </section>
+
     <section class="catalog" aria-label="代夾物與獎品對照列表">
       <div id="prizeGrid" class="prize-grid"></div>
     </section>
@@ -645,9 +659,11 @@
         ? prizeMappings
         : prizeMappings.filter(item => item.code === code);
 
-      resultCount.textContent = code === "全部"
-        ? `共 ${visibleItems.length} 種對應獎品`
-        : `代夾物 ${code} 對應 1 種獎品`;
+      if (resultCount) {
+        resultCount.textContent = code === "全部"
+          ? `共 ${visibleItems.length} 種對應獎品`
+          : `代夾物 ${code} 對應 1 種獎品`;
+      }
 
       prizeGrid.innerHTML = visibleItems.map(item => `
         <article class="prize-card" id="mapping-${escapeHTML(item.code)}">
@@ -684,16 +700,18 @@
       `).join("");
     }
 
-    codeTabs.addEventListener("click", event => {
-      const button = event.target.closest("[data-code]");
-      if (!button) return;
+    if (codeTabs) {
+      codeTabs.addEventListener("click", event => {
+        const button = event.target.closest("[data-code]");
+        if (!button) return;
 
-      codeTabs.querySelectorAll("button").forEach(item => item.classList.remove("active"));
-      button.classList.add("active");
-      renderMappings(button.dataset.code);
+        codeTabs.querySelectorAll("button").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        renderMappings(button.dataset.code);
 
-      document.querySelector(".catalog").scrollIntoView({ behavior: "smooth", block: "start" });
-    });
+        document.querySelector(".catalog")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
 
     renderMappings();
   </script>
