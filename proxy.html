@@ -225,63 +225,6 @@
     .step strong { display: block; margin-bottom: 3px; }
     .step span { color: var(--muted); font-size: 13px; font-weight: 650; }
 
-    .lookup {
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 12px;
-      padding: 14px 0 16px;
-      background: linear-gradient(180deg, rgba(245, 249, 255, 0.76), rgba(245, 249, 255, 0.44));
-      backdrop-filter: blur(12px);
-    }
-
-    .lookup-label {
-      flex: 0 0 auto;
-      color: var(--text);
-      font-size: 15px;
-      font-weight: 900;
-    }
-
-    .code-tabs {
-      display: flex;
-      flex: 1;
-      gap: 10px;
-      overflow-x: auto;
-      scrollbar-width: thin;
-    }
-
-    .code-tabs button {
-      flex: 0 0 auto;
-      min-width: 50px;
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      background: rgba(255, 255, 255, 0.76);
-      color: var(--text);
-      font-weight: 950;
-      border-radius: 999px;
-      padding: 12px 18px;
-      cursor: pointer;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
-    }
-
-    .code-tabs button.active,
-    .code-tabs button:hover {
-      color: #fff;
-      border-color: transparent;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 12px 24px rgba(106, 92, 255, 0.24);
-    }
-
-    .result-count {
-      flex: 0 0 auto;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 800;
-    }
-
     .catalog {
       padding: 20px;
       border-radius: 24px;
@@ -510,9 +453,6 @@
       .prize-card { min-height: 460px; border-radius: 22px; }
       .prize-visual { height: 235px; }
       .prize-body { padding: 20px; }
-      .lookup { align-items: flex-start; flex-direction: column; }
-      .code-tabs { width: 100%; }
-      .result-count { padding-left: 4px; }
       .nav a { padding: 10px 14px; font-size: 15px; }
     }
 
@@ -536,20 +476,6 @@
       <a class="active" href="proxy.html">代夾物</a>
       <a href="moments.html">活動花絮</a>
     </nav>
-
-    <section class="lookup" aria-label="依代夾物代號查詢">
-      <div class="lookup-label">我夾到的是：</div>
-      <div class="code-tabs" id="codeTabs">
-        <button class="active" type="button" data-code="全部">查看全部</button>
-        <button type="button" data-code="A">A</button>
-        <button type="button" data-code="B">B</button>
-        <button type="button" data-code="C">C</button>
-        <button type="button" data-code="D">D</button>
-        <button type="button" data-code="E">E</button>
-        <button type="button" data-code="F">F</button>
-      </div>
-      <div class="result-count" id="resultCount">共 6 種對應獎品</div>
-    </section>
 
     <section class="catalog" aria-label="代夾物與獎品對照列表">
       <div id="prizeGrid" class="prize-grid"></div>
@@ -642,8 +568,6 @@
     ];
 
     const prizeGrid = document.querySelector("#prizeGrid");
-    const codeTabs = document.querySelector("#codeTabs");
-    const resultCount = document.querySelector("#resultCount");
 
     function escapeHTML(value) {
       return String(value)
@@ -654,16 +578,8 @@
         .replaceAll("'", "&#039;");
     }
 
-    function renderMappings(code = "全部") {
-      const visibleItems = code === "全部"
-        ? prizeMappings
-        : prizeMappings.filter(item => item.code === code);
-
-      if (resultCount) {
-        resultCount.textContent = code === "全部"
-          ? `共 ${visibleItems.length} 種對應獎品`
-          : `代夾物 ${code} 對應 1 種獎品`;
-      }
+    function renderMappings() {
+      const visibleItems = prizeMappings;
 
       prizeGrid.innerHTML = visibleItems.map(item => `
         <article class="prize-card" id="mapping-${escapeHTML(item.code)}">
@@ -698,19 +614,6 @@
           </div>
         </article>
       `).join("");
-    }
-
-    if (codeTabs) {
-      codeTabs.addEventListener("click", event => {
-        const button = event.target.closest("[data-code]");
-        if (!button) return;
-
-        codeTabs.querySelectorAll("button").forEach(item => item.classList.remove("active"));
-        button.classList.add("active");
-        renderMappings(button.dataset.code);
-
-        document.querySelector(".catalog")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
     }
 
     renderMappings();
