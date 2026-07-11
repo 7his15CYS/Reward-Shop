@@ -300,10 +300,13 @@
 
     .prize-visual {
       position: relative;
-      height: 250px;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3;
       display: grid;
       place-items: center;
       overflow: hidden;
+      padding: 24px;
       background:
         radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.96), transparent 28%),
         linear-gradient(135deg, var(--visual-soft-a), var(--visual-soft-b));
@@ -322,8 +325,11 @@
     .prize-visual::after { right: 28px; bottom: 22px; font-size: 19px; }
 
     .prize-visual img {
-      width: 86%;
-      height: 86%;
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
       position: relative;
       z-index: 2;
@@ -451,7 +457,7 @@
       .catalog { padding: 14px; }
       .prize-grid { grid-template-columns: 1fr; gap: 18px; }
       .prize-card { min-height: 460px; border-radius: 22px; }
-      .prize-visual { height: 235px; }
+      .prize-visual { aspect-ratio: 4 / 3; padding: 20px; }
       .prize-body { padding: 20px; }
       .nav a { padding: 10px 14px; font-size: 15px; }
     }
@@ -473,7 +479,7 @@
     <nav class="nav" aria-label="頁面導覽">
       <a href="index.html">排行榜</a>
       <a href="shop.html">點數兌換</a>
-      <a class="active" href="proxy.html">代夾物</a>
+      <a class="active" href="token.html">代夾物</a>
       <a href="moments.html">活動花絮</a>
     </nav>
 
@@ -503,6 +509,7 @@
         code: "A",
         prize: "小老虎 抱枕",
         desc: "高約30cm",
+        note: "持 A 代夾物向現場人員兌換此獎品",
         image: "assets/tokens/A.jpg",
         visualA: "#ff8fc7",
         visualB: "#806cff",
@@ -609,7 +616,7 @@
             <span class="prize-label">代夾物 ${escapeHTML(item.code)} 的對應獎品</span>
             <h2 class="prize-name">${escapeHTML(item.prize)}</h2>
             <p class="prize-desc">${escapeHTML(item.desc)}</p>
-            <div class="exchange-note">${escapeHTML(item.note)}</div>
+            <div class="exchange-note">${escapeHTML(item.note || `持 ${item.code} 代夾物向現場人員兌換此獎品`)}</div>
           </div>
         </article>
       `).join("");
