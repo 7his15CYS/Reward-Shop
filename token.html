@@ -66,7 +66,8 @@
     .guide-main,
     .guide-steps,
     .catalog,
-    .notice {
+    .notice,
+    .redeemed-records {
       border: 1px solid var(--line);
       background: rgba(255, 255, 255, 0.62);
       box-shadow: var(--shadow);
@@ -436,6 +437,85 @@
     .notice strong { color: var(--text); }
     .notice code { overflow-wrap: anywhere; }
 
+    /* 已兌換紀錄 */
+    .redeemed-records {
+      margin-top: 22px;
+      padding: 24px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.70);
+    }
+
+    .records-header {
+      margin-bottom: 16px;
+    }
+
+    .records-title {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 950;
+    }
+
+    .records-subtitle {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .records-table-wrap {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.62);
+      background: rgba(255, 255, 255, 0.62);
+    }
+
+    .records-table {
+      width: 100%;
+      min-width: 680px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .records-table th,
+    .records-table td {
+      padding: 17px 18px;
+      border-bottom: 1px solid rgba(92, 109, 134, 0.12);
+      vertical-align: top;
+    }
+
+    .records-table th {
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.72);
+      font-size: 14px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .records-table td {
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 650;
+      line-height: 1.55;
+    }
+
+    .records-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .records-table tbody tr:hover {
+      background: rgba(106, 92, 255, 0.04);
+    }
+
+    .records-empty {
+      display: none;
+      margin: 0;
+      padding: 30px 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
     @media (max-width: 980px) {
       .guide { grid-template-columns: 1fr; }
       .prize-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -450,7 +530,8 @@
       .topbar,
       .guide-main,
       .guide-steps,
-      .catalog { border-radius: 20px; }
+      .catalog,
+      .redeemed-records { border-radius: 20px; }
 
       .topbar { padding: 18px; }
       .guide-main { min-height: 245px; padding: 23px; }
@@ -462,6 +543,15 @@
       .prize-visual img { inset: 12px; width: calc(100% - 24px); height: calc(100% - 24px); }
       .prize-body { padding: 20px; }
       .nav a { padding: 10px 14px; font-size: 15px; }
+
+      .redeemed-records {
+        padding: 18px 14px;
+      }
+
+      .records-table th,
+      .records-table td {
+        padding: 14px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -492,6 +582,27 @@
     <section class="notice" aria-label="兌換注意事項">
       <strong>兌換提醒：</strong>
       請妥善保留夾到的代夾物，並上傳代夾物於Line群組內，台主會與您聯繫；獎品圖片、尺寸、顏色及包裝僅供辨識，實際內容以現場實物為準。
+    </section>
+
+    <section class="redeemed-records" aria-labelledby="recordsTitle">
+      <div class="records-header">
+        <h2 id="recordsTitle" class="records-title">已兌換紀錄</h2>
+        <p class="records-subtitle">顯示代夾物獎品的兌換時間、品項與備註。</p>
+      </div>
+
+      <div id="recordsTableWrap" class="records-table-wrap">
+        <table class="records-table">
+          <thead>
+            <tr>
+              <th scope="col">時間</th>
+              <th scope="col">代夾物品項</th>
+              <th scope="col">備註</th>
+            </tr>
+          </thead>
+          <tbody id="recordsBody"></tbody>
+        </table>
+        <p id="recordsEmpty" class="records-empty">目前尚無已兌換紀錄</p>
+      </div>
     </section>
   </main>
 
@@ -565,7 +676,22 @@
       }
     ];
 
+    /*
+      已兌換紀錄：
+      新增資料時，依照下列格式加入即可。
+
+      {
+        time: "2026/07/10 14:11",
+        item: "代夾物 A－足球 娃娃",
+        note: "已完成兌換"
+      }
+    */
+    const redeemedRecords = [];
+
     const prizeGrid = document.querySelector("#prizeGrid");
+    const recordsBody = document.querySelector("#recordsBody");
+    const recordsEmpty = document.querySelector("#recordsEmpty");
+    const recordsTable = document.querySelector(".records-table");
 
     function escapeHTML(value) {
       return String(value)
@@ -614,7 +740,22 @@
       `).join("");
     }
 
+    function renderRedeemedRecords() {
+      recordsBody.innerHTML = redeemedRecords.map(record => `
+        <tr>
+          <td>${escapeHTML(record.time)}</td>
+          <td>${escapeHTML(record.item)}</td>
+          <td>${escapeHTML(record.note || "—")}</td>
+        </tr>
+      `).join("");
+
+      const hasRecords = redeemedRecords.length > 0;
+      recordsTable.style.display = hasRecords ? "table" : "none";
+      recordsEmpty.style.display = hasRecords ? "none" : "block";
+    }
+
     renderMappings();
+    renderRedeemedRecords();
   </script>
 </body>
 </html>
