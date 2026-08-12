@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="吉伊卡哇徽章累積與兌換物一覽" />
+  <title>吉伊卡哇徽章</title>
+  <style>
+    :root {
+      --text: #1d2940;
+      --muted: #5c6d86;
+      --line: rgba(255, 255, 255, 0.5);
+      --accent: #6a5cff;
+      --accent-2: #4fa3ff;
+      --pink: #ff91bd;
+      --pink-soft: #fff0f6;
+      --sky: #68b8ff;
+      --sky-soft: #edf8ff;
+      --yellow: #ffd76a;
+      --yellow-soft: #fff8dc;
+      --mint: #75d9bd;
+      --card: rgba(255, 255, 255, 0.84);
+      --card-2: rgba(255, 255, 255, 0.74);
+      --shadow: 0 10px 30px rgba(31, 45, 76, 0.12);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
+        "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
+      color: var(--text);
+      position: relative;
+      overflow-x: hidden;
+      background: #eaf2ff;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("assets/backgrounds/claw-bg.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: brightness(0.9) saturate(1.05);
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(245, 249, 255, 0.74), rgba(245, 249, 255, 0.86)),
+        radial-gradient(circle at 8% 9%, rgba(255, 145, 189, 0.20), transparent 25rem),
+        radial-gradient(circle at 90% 12%, rgba(104, 184, 255, 0.20), transparent 27rem),
+        radial-gradient(circle at 50% 92%, rgba(255, 215, 106, 0.18), transparent 30rem);
+      z-index: -1;
+    }
+
+    button { font: inherit; }
+
+    .page {
+      width: min(1180px, calc(100% - 28px));
+      margin: 32px auto 56px;
+    }
+
+    .topbar,
+    .rule-card,
+    .badge-board,
+    .reward-section {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.64);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      border-radius: 24px;
+      padding: 22px 24px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 44px);
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 20px 0 26px;
+    }
+
+    .nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 800;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.72);
+      border-radius: 999px;
+      padding: 12px 18px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav a.active,
+    .nav a:hover {
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+    }
+
+    .rule-card {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 22px;
+      align-items: center;
+      padding: 24px 26px;
+      border-radius: 24px;
+      margin-bottom: 22px;
+    }
+
+    .rule-card::after {
+      content: "15";
+      position: absolute;
+      right: -6px;
+      bottom: -34px;
+      color: rgba(106, 92, 255, 0.06);
+      font-size: 170px;
+      line-height: 1;
+      font-weight: 950;
+      pointer-events: none;
+    }
+
+    .rule-badge-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 104px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(255, 240, 246, 0.92), rgba(237, 248, 255, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.78);
+    }
+
+    .rule-copy { position: relative; z-index: 1; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 9px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: #866000;
+      background: rgba(255, 248, 220, 0.92);
+      border: 1px solid rgba(255, 215, 106, 0.62);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .rule-title {
+      margin: 0;
+      font-size: clamp(21px, 2.6vw, 29px);
+      line-height: 1.35;
+      font-weight: 950;
+    }
+
+    .rule-text {
+      margin: 9px 0 0;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .rule-text strong { color: #4f6cff; }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: clamp(23px, 3vw, 30px);
+      font-weight: 950;
+    }
+
+    .section-desc {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 1.65;
+    }
+
+    .badge-board {
+      padding: 22px;
+      border-radius: 24px;
+      margin-bottom: 26px;
+    }
+
+    .member-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .member-row {
+      display: grid;
+      grid-template-columns: minmax(150px, 0.28fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: center;
+      padding: 20px;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.66);
+      background: linear-gradient(180deg, var(--card), var(--card-2));
+      box-shadow: 0 8px 22px rgba(31, 45, 76, 0.07);
+    }
+
+    .member-profile {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .avatar {
+      flex: 0 0 48px;
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--accent));
+      font-size: 20px;
+      font-weight: 950;
+      box-shadow: 0 8px 20px rgba(106, 92, 255, 0.20);
+    }
+
+    .member-name {
+      overflow-wrap: anywhere;
+      font-size: 20px;
+      font-weight: 950;
+      line-height: 1.2;
+    }
+
+    .member-label {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .badge-progress-wrap { min-width: 0; }
+
+    .badge-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .badge-count {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .badge-count strong {
+      color: #4f6cff;
+      font-size: 24px;
+    }
+
+    .badge-count span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .progress-bar {
+      width: min(260px, 42%);
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(91, 109, 134, 0.12);
+    }
+
+    .progress-value {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--pink), var(--accent-2));
+    }
+
+    .badge-slots {
+      display: grid;
+      grid-template-columns: repeat(15, minmax(34px, 1fr));
+      gap: 7px;
+    }
+
+    .badge-slot {
+      aspect-ratio: 1;
+      min-width: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 2px dashed rgba(91, 109, 134, 0.20);
+      background: rgba(236, 242, 251, 0.64);
+    }
+
+    .badge-slot.collected {
+      border-style: solid;
+      border-color: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 5px 13px rgba(31, 45, 76, 0.10);
+    }
+
+    /* 純 CSS 徽章：不需要另外準備圖片 */
+    .chi-badge {
+      --badge-size: 42px;
+      position: relative;
+      width: var(--badge-size);
+      height: var(--badge-size);
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #ffffff 10%, #fff7fb 62%, #eaf6ff 100%);
+      border: max(2px, calc(var(--badge-size) * .06)) solid #77bfff;
+      box-shadow:
+        inset 0 0 0 max(2px, calc(var(--badge-size) * .045)) rgba(255, 255, 255, 0.95),
+        0 5px 12px rgba(71, 130, 194, 0.18);
+    }
+
+    .chi-badge::before,
+    .chi-badge::after {
+      content: "";
+      position: absolute;
+      top: 24%;
+      width: 10%;
+      height: 13%;
+      border-radius: 50%;
+      background: #26364d;
+      box-shadow: 0 calc(var(--badge-size) * .14) 0 calc(var(--badge-size) * .03) #ffb1c6;
+    }
+
+    .chi-badge::before { left: 28%; }
+    .chi-badge::after { right: 28%; }
+
+    .badge-mouth {
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      width: 17%;
+      height: 9%;
+      transform: translateX(-50%);
+      border-bottom: max(1px, calc(var(--badge-size) * .04)) solid #26364d;
+      border-radius: 0 0 50% 50%;
+    }
+
+    .badge-star {
+      position: absolute;
+      right: -9%;
+      top: -10%;
+      display: grid;
+      place-items: center;
+      width: 38%;
+      height: 38%;
+      border-radius: 50%;
+      color: #9a6a00;
+      background: var(--yellow);
+      border: 2px solid #fff;
+      font-size: calc(var(--badge-size) * .20);
+      font-weight: 950;
+      line-height: 1;
+      box-shadow: 0 3px 8px rgba(154, 106, 0, 0.18);
+    }
+
+    .rule-badge-wrap .chi-badge { --badge-size: 72px; }
+    .badge-slot .chi-badge { --badge-size: min(42px, 100%); }
+
+    .reward-section {
+      padding: 22px;
+      border-radius: 24px;
+    }
+
+    .reward-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .reward-card {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 440px;
+      border: 1px solid rgba(255, 255, 255, 0.62);
+      border-radius: 24px;
+      background: linear-gradient(180deg, var(--card), var(--card-2));
+      box-shadow: 0 8px 22px rgba(31, 45, 76, 0.08);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .reward-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 34px rgba(31, 45, 76, 0.13);
+    }
+
+    .reward-image {
+      position: relative;
+      height: 255px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(255, 145, 189, 0.22), transparent 30%),
+        radial-gradient(circle at 82% 74%, rgba(104, 184, 255, 0.24), transparent 32%),
+        rgba(246, 250, 255, 0.84);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.62);
+    }
+
+    .reward-image img {
+      position: relative;
+      z-index: 2;
+      width: 88%;
+      height: 88%;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 10px 16px rgba(31, 45, 76, 0.12));
+    }
+
+    .image-placeholder {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 22px;
+      color: #6f8099;
+    }
+
+    .placeholder-inner {
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+    }
+
+    .placeholder-icon {
+      width: 72px;
+      height: 72px;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px dashed rgba(91, 109, 134, 0.28);
+      font-size: 30px;
+      box-shadow: 0 8px 22px rgba(31, 45, 76, 0.07);
+    }
+
+    .placeholder-text {
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 750;
+    }
+
+    .reward-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: 22px;
+    }
+
+    .reward-topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 13px;
+    }
+
+    .reward-label,
+    .badge-cost {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .reward-label {
+      color: #356082;
+      background: rgba(237, 248, 255, 0.9);
+      border: 1px solid rgba(104, 184, 255, 0.30);
+    }
+
+    .badge-cost {
+      gap: 5px;
+      color: #865f00;
+      background: rgba(255, 248, 220, 0.94);
+      border: 1px solid rgba(255, 215, 106, 0.52);
+      white-space: nowrap;
+    }
+
+    .reward-name {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.35;
+      font-weight: 950;
+      overflow-wrap: anywhere;
+    }
+
+    .reward-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+      font-weight: 650;
+      white-space: pre-line;
+    }
+
+    .empty {
+      display: none;
+      margin: 0;
+      padding: 36px 20px;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 750;
+    }
+
+    .edit-hint {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      font-weight: 650;
+    }
+
+    @media (max-width: 960px) {
+      .badge-slots { grid-template-columns: repeat(8, minmax(34px, 1fr)); }
+      .reward-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .page { width: min(100% - 20px, 1180px); margin-top: 18px; }
+      .topbar { align-items: flex-start; padding: 20px; }
+      .rule-card { grid-template-columns: 82px 1fr; padding: 20px; gap: 15px; }
+      .rule-badge-wrap { min-height: 82px; }
+      .rule-badge-wrap .chi-badge { --badge-size: 60px; }
+      .member-row { grid-template-columns: 1fr; gap: 15px; padding: 17px; }
+      .badge-summary { margin-bottom: 10px; }
+      .progress-bar { width: 48%; }
+      .badge-slots { grid-template-columns: repeat(5, minmax(38px, 1fr)); gap: 9px; }
+      .reward-grid { grid-template-columns: 1fr; }
+      .reward-card { min-height: 0; }
+      .reward-image { height: 250px; }
+    }
+
+    @media (max-width: 460px) {
+      .topbar { display: block; }
+      .nav { gap: 8px; }
+      .nav a { padding: 10px 13px; font-size: 14px; }
+      .rule-card { grid-template-columns: 1fr; }
+      .rule-badge-wrap { width: 88px; }
+      .section-head { display: block; }
+      .badge-summary { align-items: flex-end; }
+      .progress-bar { width: 44%; }
+      .badge-board, .reward-section { padding: 14px; }
+      .member-row { padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div>
+        <h1>吉伊卡哇徽章</h1>
+        <p class="subtitle">夾到指定代夾物，領衛生紙＋累積可兌換的可愛徽章</p>
+      </div>
+    </header>
+
+    <nav class="nav" aria-label="頁面導覽">
+      <a href="index.html">排行榜</a>
+      <a href="shop.html">點數兌換</a>
+      <a href="token.html">代夾物</a>
+      <a class="active" href="badge.html">吉伊卡哇徽章</a>
+      <a href="moments.html">活動花絮</a>
+    </nav>
+
+    <section class="rule-card" aria-label="吉伊卡哇徽章活動規則">
+      <div class="rule-badge-wrap" aria-hidden="true">
+        <div class="chi-badge">
+          <span class="badge-mouth"></span>
+          <span class="badge-star">★</span>
+        </div>
+      </div>
+      <div class="rule-copy">
+        <span class="eyebrow">★ 活動玩法</span>
+        <h2 class="rule-title">夾到吉伊卡哇代夾物，即可獲得衛生紙 1 包＋徽章 1 枚</h2>
+        <p class="rule-text">徽章會累積在下方會員欄位中，每位客人<strong>最多顯示 15 枚</strong>。累積到指定數量後，可依下方兌換表選擇徽章兌換物。</p>
+      </div>
+    </section>
+
+    <section class="badge-board" aria-labelledby="badgeBoardTitle">
+      <div class="section-head">
+        <div>
+          <h2 id="badgeBoardTitle" class="section-title">徽章累積</h2>
+          <p class="section-desc">客人名稱後方直接顯示已獲得的徽章；灰色空格代表尚未取得。</p>
+        </div>
+      </div>
+      <div id="memberList" class="member-list"></div>
+      <p class="edit-hint">管理方式：到本頁最下方 JavaScript 的 <strong>badgeMembers</strong> 修改客人名稱與 badges 數量即可。</p>
+    </section>
+
+    <section class="reward-section" aria-labelledby="rewardTitle">
+      <div class="section-head">
+        <div>
+          <h2 id="rewardTitle" class="section-title">徽章兌換表</h2>
+          <p class="section-desc">版型比照代夾物頁，可放圖片、品名、所需徽章數與備註（尺寸、顏色、款式等）。</p>
+        </div>
+      </div>
+      <div id="rewardGrid" class="reward-grid"></div>
+      <p id="rewardEmpty" class="empty">目前尚無徽章兌換物</p>
+      <p class="edit-hint">圖片建議放在 <strong>assets/badge-rewards/</strong>，再於 <strong>badgeRewards</strong> 陣列修改 image、name、note 與 cost。</p>
+    </section>
+  </main>
+
+  <script>
+    const MAX_BADGES = 15;
+
+    /*
+      徽章會員資料：
+      name   = 客人名稱
+      badges = 目前持有徽章數，最多會顯示 15 枚
+    */
+    const badgeMembers = [
+      { name: "Hi", badges: 7 }
+      // 範例：{ name: "小明", badges: 12 },
+    ];
+
+    /*
+      徽章兌換物：
+      image = 商品圖片路徑
+      name  = 商品名稱
+      note  = 備註，可填尺寸、顏色、款式、兌換限制等
+      cost  = 兌換需要幾枚徽章
+
+      把自己的圖片放進 assets/badge-rewards/ 後修改下方資料即可。
+    */
+    const badgeRewards = [
+      {
+        name: "兌換物範例 A",
+        note: "尺寸：約 20 公分\n顏色：粉色",
+        cost: 3,
+        image: "assets/badge-rewards/reward-01.jpg"
+      },
+      {
+        name: "兌換物範例 B",
+        note: "款式：隨機\n實際品項以現場為準",
+        cost: 5,
+        image: "assets/badge-rewards/reward-02.jpg"
+      },
+      {
+        name: "兌換物範例 C",
+        note: "尺寸：約 30 公分\n數量有限，兌完為止",
+        cost: 10,
+        image: "assets/badge-rewards/reward-03.jpg"
+      }
+    ];
+
+    const memberList = document.querySelector("#memberList");
+    const rewardGrid = document.querySelector("#rewardGrid");
+    const rewardEmpty = document.querySelector("#rewardEmpty");
+
+    function escapeHTML(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function badgeIcon() {
+      return `
+        <div class="chi-badge" aria-hidden="true">
+          <span class="badge-mouth"></span>
+          <span class="badge-star">★</span>
+        </div>
+      `;
+    }
+
+    function renderMembers() {
+      memberList.innerHTML = badgeMembers.map(member => {
+        const count = Math.max(0, Math.min(MAX_BADGES, Number(member.badges) || 0));
+        const percentage = (count / MAX_BADGES) * 100;
+        const initial = String(member.name || "?").trim().slice(0, 1).toUpperCase() || "?";
+
+        const slots = Array.from({ length: MAX_BADGES }, (_, index) => `
+          <div class="badge-slot ${index < count ? "collected" : ""}" title="${index < count ? `第 ${index + 1} 枚徽章` : `第 ${index + 1} 格尚未取得`}">
+            ${index < count ? badgeIcon() : ""}
+          </div>
+        `).join("");
+
+        return `
+          <article class="member-row">
+            <div class="member-profile">
+              <div class="avatar" aria-hidden="true">${escapeHTML(initial)}</div>
+              <div>
+                <div class="member-name">${escapeHTML(member.name)}</div>
+                <div class="member-label">吉伊卡哇徽章會員</div>
+              </div>
+            </div>
+
+            <div class="badge-progress-wrap">
+              <div class="badge-summary">
+                <div class="badge-count"><strong>${count}</strong><span>/ ${MAX_BADGES} 枚</span></div>
+                <div class="progress-bar" aria-label="徽章累積進度 ${count} / ${MAX_BADGES}">
+                  <div class="progress-value" style="width:${percentage}%"></div>
+                </div>
+              </div>
+              <div class="badge-slots" aria-label="${escapeHTML(member.name)} 的徽章，共 ${count} 枚">
+                ${slots}
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderRewards() {
+      rewardGrid.innerHTML = badgeRewards.map((reward, index) => `
+        <article class="reward-card">
+          <div class="reward-image">
+            <div class="image-placeholder" aria-hidden="true">
+              <div class="placeholder-inner">
+                <div class="placeholder-icon">🎁</div>
+                <div class="placeholder-text">兌換物圖片 ${String(index + 1).padStart(2, "0")}<br>請放入你的商品照片</div>
+              </div>
+            </div>
+            <img
+              src="${escapeHTML(reward.image)}"
+              alt="${escapeHTML(reward.name)}"
+              loading="lazy"
+              onerror="this.style.display='none'">
+          </div>
+          <div class="reward-body">
+            <div class="reward-topline">
+              <span class="reward-label">徽章兌換物</span>
+              <span class="badge-cost">★ ${escapeHTML(reward.cost)} 枚</span>
+            </div>
+            <h3 class="reward-name">${escapeHTML(reward.name)}</h3>
+            <p class="reward-note">${escapeHTML(reward.note || "—")}</p>
+          </div>
+        </article>
+      `).join("");
+
+      rewardEmpty.style.display = badgeRewards.length ? "none" : "block";
+    }
+
+    renderMembers();
+    renderRewards();
+  </script>
+</body>
+</html>
