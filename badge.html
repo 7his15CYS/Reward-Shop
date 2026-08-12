@@ -432,11 +432,17 @@
       background: rgba(255, 255, 255, 0.22);
     }
 
+    .reward-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 7px;
+    }
+
     .reward-category {
       display: inline-flex;
       align-items: center;
       width: fit-content;
-      margin-bottom: 7px;
       padding: 4px 8px;
       border-radius: 999px;
       color: #7a3f68;
@@ -444,6 +450,7 @@
       border: 1px solid rgba(255, 145, 189, 0.30);
       font-size: 11px;
       font-weight: 900;
+      white-space: nowrap;
     }
 
     .reward-grid {
@@ -491,43 +498,7 @@
       display: block;
       filter: drop-shadow(0 10px 16px rgba(31, 45, 76, 0.12));
     }
-
-    .image-placeholder {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 22px;
-      color: #6f8099;
-    }
-
-    .placeholder-inner {
-      display: grid;
-      justify-items: center;
-      gap: 10px;
-    }
-
-    .placeholder-icon {
-      width: 52px;
-      height: 52px;
-      display: grid;
-      place-items: center;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.78);
-      border: 1px dashed rgba(91, 109, 134, 0.28);
-      font-size: 24px;
-      box-shadow: 0 8px 22px rgba(31, 45, 76, 0.07);
-    }
-
-    .placeholder-text {
-      font-size: 11px;
-      line-height: 1.6;
-      font-weight: 750;
-    }
-
-    .reward-body {
+.reward-body {
       display: flex;
       flex-direction: column;
       flex: 1;
@@ -697,7 +668,7 @@
       <div id="categoryFilter" class="category-filter" aria-label="兌換品分類"></div>
       <div id="rewardGrid" class="reward-grid"></div>
       <p id="rewardEmpty" class="empty">目前尚無徽章兌換物</p>
-      <p class="edit-hint">圖片建議放在 <strong>assets/badge-rewards/</strong>，再於 <strong>badgeRewards</strong> 陣列修改 image、name、category、note 與 cost。</p>
+      <p class="edit-hint">圖片建議放在 <strong>assets/badge-rewards/</strong>，再於 <strong>badgeRewards</strong> 陣列修改 image、name、category、note 與 cost；category 可填多個分類。</p>
     </section>
   </main>
 
@@ -718,7 +689,7 @@
       徽章兌換物：
       image = 商品圖片路徑
       name     = 商品名稱
-      category = 商品分類，請填：日本最新 / 絕版 / 地區限定 / 大娃娃 / 小娃娃 / 公仔 / 盲盒 / 其他
+      category = 商品分類，可填一個或多個，例如：["絕版", "大娃娃"]
       note     = 備註，可填尺寸、顏色、款式、兌換限制等
       cost     = 兌換需要幾枚徽章
 
@@ -813,9 +784,16 @@
       }).join("");
     }
 
+    function getRewardCategories(reward) {
+      const value = reward.category ?? "其他";
+      return Array.isArray(value) ? value : [value];
+    }
+
     function getCategoryCount(category) {
       if (category === "全部") return badgeRewards.length;
-      return badgeRewards.filter(reward => reward.category === category).length;
+      return badgeRewards.filter(reward =>
+        getRewardCategories(reward).includes(category)
+      ).length;
     }
 
     function renderCategoryFilter() {
@@ -849,17 +827,13 @@
     function renderRewards() {
       const filteredRewards = activeRewardCategory === "全部"
         ? badgeRewards
-        : badgeRewards.filter(reward => reward.category === activeRewardCategory);
+        : badgeRewards.filter(reward =>
+            getRewardCategories(reward).includes(activeRewardCategory)
+          );
 
       rewardGrid.innerHTML = filteredRewards.map((reward, index) => `
         <article class="reward-card">
           <div class="reward-image">
-            <div class="image-placeholder" aria-hidden="true">
-              <div class="placeholder-inner">
-                <div class="placeholder-icon">🎁</div>
-                <div class="placeholder-text">兌換物圖片 ${String(index + 1).padStart(2, "0")}<br>  </div>
-              </div>
-            </div>
             <img
               src="${escapeHTML(reward.image)}"
               alt="${escapeHTML(reward.name)}"
@@ -871,7 +845,11 @@
               <span class="reward-label">徽章兌換物</span>
               <span class="badge-cost">★ ${escapeHTML(reward.cost)} 枚</span>
             </div>
-            <span class="reward-category">${escapeHTML(reward.category || "其他")}</span>
+            <div class="reward-categories">
+              ${getRewardCategories(reward).map(category => `
+                <span class="reward-category">${escapeHTML(category)}</span>
+              `).join("")}
+            </div>
             <h3 class="reward-name">${escapeHTML(reward.name)}</h3>
             <p class="reward-note">${escapeHTML(reward.note || "—")}</p>
           </div>
