@@ -232,8 +232,8 @@
 
     .member-row {
       display: grid;
-      grid-template-columns: minmax(150px, 0.28fr) minmax(0, 1fr);
-      gap: 20px;
+      grid-template-columns: minmax(260px, 0.42fr) minmax(0, 1fr);
+      gap: 22px;
       align-items: center;
       padding: 20px;
       border-radius: 22px;
@@ -243,31 +243,20 @@
     }
 
     .member-profile {
-      display: flex;
-      align-items: center;
-      gap: 13px;
       min-width: 0;
-    }
-
-    .avatar {
-      flex: 0 0 48px;
-      width: 48px;
-      height: 48px;
-      display: grid;
-      place-items: center;
-      border-radius: 16px;
-      color: #fff;
-      background: linear-gradient(135deg, var(--pink), var(--accent));
-      font-size: 20px;
-      font-weight: 950;
-      box-shadow: 0 8px 20px rgba(106, 92, 255, 0.20);
+      width: 100%;
     }
 
     .member-name {
-      overflow-wrap: anywhere;
-      font-size: 20px;
+      display: block;
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: clamp(17px, 2vw, 20px);
       font-weight: 950;
-      line-height: 1.2;
+      line-height: 1.25;
     }
 
     .member-label {
@@ -534,6 +523,7 @@
     }
 
     @media (max-width: 960px) {
+      .member-row { grid-template-columns: minmax(220px, 0.4fr) minmax(0, 1fr); }
       .badge-slots { grid-template-columns: repeat(8, minmax(34px, 1fr)); }
       .reward-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
@@ -545,6 +535,7 @@
       .rule-badge-wrap { min-height: 82px; }
       .rule-badge-wrap .chi-badge { --badge-size: 60px; }
       .member-row { grid-template-columns: 1fr; gap: 15px; padding: 17px; }
+      .member-name { max-width: 100%; }
       .badge-summary { margin-bottom: 10px; }
       .progress-bar { width: 48%; }
       .badge-slots { grid-template-columns: repeat(5, minmax(38px, 1fr)); gap: 9px; }
@@ -680,7 +671,6 @@
       memberList.innerHTML = badgeMembers.map(member => {
         const count = Math.max(0, Math.min(MAX_BADGES, Number(member.badges) || 0));
         const percentage = (count / MAX_BADGES) * 100;
-        const initial = String(member.name || "?").trim().slice(0, 1).toUpperCase() || "?";
 
         const slots = Array.from({ length: MAX_BADGES }, (_, index) => `
           <div class="badge-slot ${index < count ? "collected" : ""}" title="${index < count ? `第 ${index + 1} 枚徽章` : `第 ${index + 1} 格尚未取得`}">
@@ -691,11 +681,8 @@
         return `
           <article class="member-row">
             <div class="member-profile">
-              <div class="avatar" aria-hidden="true">${escapeHTML(initial)}</div>
-              <div>
-                <div class="member-name">${escapeHTML(member.name)}</div>
-                <div class="member-label">吉伊卡哇徽章會員</div>
-              </div>
+              <div class="member-name" title="${escapeHTML(member.name)}">${escapeHTML(member.name)}</div>
+              <div class="member-label">吉伊卡哇徽章會員</div>
             </div>
 
             <div class="badge-progress-wrap">
