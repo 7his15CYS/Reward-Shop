@@ -368,6 +368,84 @@
       border-radius: 24px;
     }
 
+    .category-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 2px 0 22px;
+      padding: 14px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.54);
+      border: 1px solid rgba(255, 255, 255, 0.68);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.66);
+    }
+
+    .category-btn {
+      appearance: none;
+      border: 1px solid rgba(91, 109, 134, 0.14);
+      border-radius: 999px;
+      padding: 10px 15px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.82);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 850;
+      line-height: 1;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(31, 45, 76, 0.06);
+      transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease,
+        color 160ms ease,
+        border-color 160ms ease;
+    }
+
+    .category-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 16px rgba(31, 45, 76, 0.10);
+    }
+
+    .category-btn.active {
+      color: #fff;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--pink), var(--accent));
+      box-shadow: 0 7px 18px rgba(106, 92, 255, 0.20);
+    }
+
+    .category-count {
+      display: inline-grid;
+      place-items: center;
+      min-width: 20px;
+      height: 20px;
+      margin-left: 6px;
+      padding: 0 6px;
+      border-radius: 999px;
+      color: inherit;
+      background: rgba(91, 109, 134, 0.10);
+      font-size: 11px;
+      font-weight: 900;
+      vertical-align: middle;
+    }
+
+    .category-btn.active .category-count {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .reward-category {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      margin-bottom: 9px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: #7a3f68;
+      background: rgba(255, 240, 246, 0.92);
+      border: 1px solid rgba(255, 145, 189, 0.30);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
     .reward-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -530,6 +608,14 @@
 
     @media (max-width: 720px) {
       .page { width: min(100% - 20px, 1180px); margin-top: 18px; }
+      .category-filter {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 12px;
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+      }
+      .category-btn { flex: 0 0 auto; }
       .topbar { align-items: flex-start; padding: 20px; }
       .rule-card { grid-template-columns: 82px 1fr; padding: 20px; gap: 15px; }
       .rule-badge-wrap { min-height: 82px; }
@@ -601,9 +687,10 @@
           <h2 id="rewardTitle" class="section-title">徽章兌換表</h2>
         </div>
       </div>
+      <div id="categoryFilter" class="category-filter" aria-label="兌換品分類"></div>
       <div id="rewardGrid" class="reward-grid"></div>
       <p id="rewardEmpty" class="empty">目前尚無徽章兌換物</p>
-      <p class="edit-hint">圖片建議放在 <strong>assets/badge-rewards/</strong>，再於 <strong>badgeRewards</strong> 陣列修改 image、name、note 與 cost。</p>
+      <p class="edit-hint">圖片建議放在 <strong>assets/badge-rewards/</strong>，再於 <strong>badgeRewards</strong> 陣列修改 image、name、category、note 與 cost。</p>
     </section>
   </main>
 
@@ -623,27 +710,44 @@
     /*
       徽章兌換物：
       image = 商品圖片路徑
-      name  = 商品名稱
-      note  = 備註，可填尺寸、顏色、款式、兌換限制等
-      cost  = 兌換需要幾枚徽章
+      name     = 商品名稱
+      category = 商品分類，請填：日本最新 / 絕版 / 地區限定 / 大娃娃 / 小娃娃 / 公仔 / 盲盒 / 其他
+      note     = 備註，可填尺寸、顏色、款式、兌換限制等
+      cost     = 兌換需要幾枚徽章
 
       把自己的圖片放進 assets/badge-rewards/ 後修改下方資料即可。
     */
+    const rewardCategories = [
+      "日本最新",
+      "絕版",
+      "地區限定",
+      "大娃娃",
+      "小娃娃",
+      "公仔",
+      "盲盒",
+      "其他"
+    ];
+
+    let activeRewardCategory = "全部";
+
     const badgeRewards = [
       {
         name: "兌換物範例 A",
+        category: "日本最新",
         note: "尺寸：約 20 公分\n顏色：粉色",
         cost: 3,
         image: "assets/badge-rewards/reward-01.jpg"
       },
       {
         name: "兌換物範例 B",
+        category: "地區限定",
         note: "款式：隨機\n實際品項以現場為準",
         cost: 5,
         image: "assets/badge-rewards/reward-02.jpg"
       },
       {
         name: "兌換物範例 C",
+        category: "大娃娃",
         note: "尺寸：約 30 公分\n數量有限，兌完為止",
         cost: 10,
         image: "assets/badge-rewards/reward-03.jpg"
@@ -651,6 +755,7 @@
     ];
 
     const memberList = document.querySelector("#memberList");
+    const categoryFilter = document.querySelector("#categoryFilter");
     const rewardGrid = document.querySelector("#rewardGrid");
     const rewardEmpty = document.querySelector("#rewardEmpty");
 
@@ -701,8 +806,45 @@
       }).join("");
     }
 
+    function getCategoryCount(category) {
+      if (category === "全部") return badgeRewards.length;
+      return badgeRewards.filter(reward => reward.category === category).length;
+    }
+
+    function renderCategoryFilter() {
+      const categories = ["全部", ...rewardCategories];
+
+      categoryFilter.innerHTML = categories.map(category => {
+        const count = getCategoryCount(category);
+        const isActive = category === activeRewardCategory;
+
+        return `
+          <button
+            type="button"
+            class="category-btn ${isActive ? "active" : ""}"
+            data-category="${escapeHTML(category)}"
+            aria-pressed="${isActive ? "true" : "false"}">
+            ${escapeHTML(category)}
+            <span class="category-count">${count}</span>
+          </button>
+        `;
+      }).join("");
+
+      categoryFilter.querySelectorAll(".category-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          activeRewardCategory = button.dataset.category || "全部";
+          renderCategoryFilter();
+          renderRewards();
+        });
+      });
+    }
+
     function renderRewards() {
-      rewardGrid.innerHTML = badgeRewards.map((reward, index) => `
+      const filteredRewards = activeRewardCategory === "全部"
+        ? badgeRewards
+        : badgeRewards.filter(reward => reward.category === activeRewardCategory);
+
+      rewardGrid.innerHTML = filteredRewards.map((reward, index) => `
         <article class="reward-card">
           <div class="reward-image">
             <div class="image-placeholder" aria-hidden="true">
@@ -722,16 +864,23 @@
               <span class="reward-label">徽章兌換物</span>
               <span class="badge-cost">★ ${escapeHTML(reward.cost)} 枚</span>
             </div>
+            <span class="reward-category">${escapeHTML(reward.category || "其他")}</span>
             <h3 class="reward-name">${escapeHTML(reward.name)}</h3>
             <p class="reward-note">${escapeHTML(reward.note || "—")}</p>
           </div>
         </article>
       `).join("");
 
-      rewardEmpty.style.display = badgeRewards.length ? "none" : "block";
+      if (filteredRewards.length) {
+        rewardEmpty.style.display = "none";
+      } else {
+        rewardEmpty.textContent = `「${activeRewardCategory}」目前尚無兌換物`;
+        rewardEmpty.style.display = "block";
+      }
     }
 
     renderMembers();
+    renderCategoryFilter();
     renderRewards();
   </script>
 </body>
