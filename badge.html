@@ -538,6 +538,42 @@
       white-space: nowrap;
     }
 
+    .stock-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+      color: #23715f;
+      background: rgba(223, 248, 239, 0.96);
+      border: 1px solid rgba(117, 217, 189, 0.46);
+    }
+
+    .stock-badge.low {
+      color: #9a6400;
+      background: rgba(255, 248, 220, 0.96);
+      border-color: rgba(255, 215, 106, 0.60);
+    }
+
+    .stock-badge.sold-out {
+      color: #a43b58;
+      background: rgba(255, 232, 239, 0.96);
+      border-color: rgba(255, 145, 189, 0.48);
+    }
+
+    .stock-badge.unset {
+      color: #66758c;
+      background: rgba(238, 243, 250, 0.94);
+      border-color: rgba(91, 109, 134, 0.18);
+    }
+
+    .reward-card.sold-out .reward-image img {
+      opacity: 0.48;
+      filter: grayscale(0.65) drop-shadow(0 8px 14px rgba(31, 45, 76, 0.08));
+    }
+
     .reward-name {
       margin: 0 0 7px;
       font-size: 17px;
@@ -689,6 +725,7 @@
       category = 商品分類，可填一個或多個，例如：["絕版", "大娃娃"]
       note     = 備註，可填尺寸、顏色、款式、兌換限制等
       cost     = 兌換需要幾枚徽章
+      stock    = 剩餘可兌換數量；0 代表已兌完
 
       把自己的圖片放進 assets/badge-rewards/ 後修改下方資料即可。
     */
@@ -707,10 +744,19 @@
 
     const badgeRewards = [
       {
+        name: "吉伊卡哇毛巾",
+        category: ["其他"],
+        note: "27x54cm 100%棉 台灣製造\n實際品項以現場為準",
+        cost: 1,
+        stock: null,
+        image: "assets/badge-rewards/吉伊卡哇毛巾.png"
+      },
+      {
         name: "日本711一番賞-吉伊卡哇",
         category: ["絕版", "大娃娃"],
         note: "約H280×W240×D190㎜\n實際品項以現場為準",
         cost: 4,
+        stock: null,
         image: "assets/badge-rewards/日本711一番賞-吉伊卡哇.png"
       },
       {
@@ -718,6 +764,7 @@
         category: ["絕版", "大娃娃"],
         note: "約H280×W240×D190㎜\n實際品項以現場為準",
         cost: 4,
+        stock: null,
         image: "assets/badge-rewards/日本711一番賞-小八貓.png"
       },
       {
@@ -725,6 +772,7 @@
         category: ["絕版", "大娃娃"],
         note: "約H280×W240×D190㎜\n實際品項以現場為準",
         cost: 5,
+        stock: null,
         image: "assets/badge-rewards/日本711一番賞-烏薩奇.png"
       },
       {
@@ -732,6 +780,7 @@
         category: ["大娃娃"],
         note: "約H350㎜\n實際品項以現場為準",
         cost: 5,
+        stock: null,
         image: "assets/badge-rewards/生日系列-王子吉伊.png"
       }
     ];
@@ -828,6 +877,24 @@
       });
     }
 
+    function getStockInfo(reward) {
+      if (reward.stock === null || reward.stock === undefined || reward.stock === "") {
+        return { label: "數量未設定", className: "unset", soldOut: false };
+      }
+
+      const stock = Math.max(0, Math.floor(Number(reward.stock) || 0));
+
+      if (stock === 0) {
+        return { label: "已兌完", className: "sold-out", soldOut: true };
+      }
+
+      return {
+        label: `剩餘 ${stock} 個`,
+        className: stock <= 2 ? "low" : "",
+        soldOut: false
+      };
+    }
+
     function renderRewards() {
       const filteredRewards = activeRewardCategory === "全部"
         ? badgeRewards
@@ -835,30 +902,38 @@
             getRewardCategories(reward).includes(activeRewardCategory)
           );
 
-      rewardGrid.innerHTML = filteredRewards.map((reward, index) => `
-        <article class="reward-card">
-          <div class="reward-image">
-            <img
-              src="${escapeHTML(reward.image)}"
-              alt="${escapeHTML(reward.name)}"
-              loading="lazy"
-              onerror="this.style.display='none'">
-          </div>
-          <div class="reward-body">
-            <div class="reward-topline">
-              <span class="reward-label">徽章兌換物</span>
-              <span class="badge-cost">★ ${escapeHTML(reward.cost)} 枚</span>
+      rewardGrid.innerHTML = filteredRewards.map((reward, index) => {
+        const stockInfo = getStockInfo(reward);
+
+        return `
+          <article class="reward-card ${stockInfo.soldOut ? "sold-out" : ""}">
+            <div class="reward-image">
+              <img
+                src="${escapeHTML(reward.image)}"
+                alt="${escapeHTML(reward.name)}"
+                loading="lazy"
+                onerror="this.style.display='none'">
             </div>
-            <div class="reward-categories">
-              ${getRewardCategories(reward).map(category => `
-                <span class="reward-category">${escapeHTML(category)}</span>
-              `).join("")}
+
+            <div class="reward-body">
+              <div class="reward-topline">
+                <span class="reward-label">徽章兌換物</span>
+                <span class="badge-cost">★ ${escapeHTML(reward.cost)} 枚</span>
+                <span class="stock-badge ${stockInfo.className}">${escapeHTML(stockInfo.label)}</span>
+              </div>
+
+              <div class="reward-categories">
+                ${getRewardCategories(reward).map(category => `
+                  <span class="reward-category">${escapeHTML(category)}</span>
+                `).join("")}
+              </div>
+
+              <h3 class="reward-name">${escapeHTML(reward.name)}</h3>
+              <p class="reward-note">${escapeHTML(reward.note || "—")}</p>
             </div>
-            <h3 class="reward-name">${escapeHTML(reward.name)}</h3>
-            <p class="reward-note">${escapeHTML(reward.note || "—")}</p>
-          </div>
-        </article>
-      `).join("");
+          </article>
+        `;
+      }).join("");
 
       if (filteredRewards.length) {
         rewardEmpty.style.display = "none";
