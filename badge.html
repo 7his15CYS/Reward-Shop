@@ -436,7 +436,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
-      margin-bottom: 7px;
+      margin-bottom: 10px;
     }
 
     .reward-category {
@@ -509,12 +509,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-bottom: 10px;
+      flex-wrap: nowrap;
+      gap: 8px;
+      margin-bottom: 9px;
     }
 
-    .reward-label,
     .badge-cost {
       display: inline-flex;
       align-items: center;
@@ -523,14 +522,7 @@
       font-size: 11px;
       font-weight: 900;
     }
-
-    .reward-label {
-      color: #356082;
-      background: rgba(237, 248, 255, 0.9);
-      border: 1px solid rgba(104, 184, 255, 0.30);
-    }
-
-    .badge-cost {
+.badge-cost {
       gap: 5px;
       color: #865f00;
       background: rgba(255, 248, 220, 0.94);
@@ -541,6 +533,8 @@
     .stock-badge {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
       border-radius: 999px;
       padding: 6px 9px;
       font-size: 11px;
@@ -575,7 +569,7 @@
     }
 
     .reward-name {
-      margin: 0 0 7px;
+      margin: 0 0 8px;
       font-size: 17px;
       line-height: 1.35;
       font-weight: 950;
@@ -644,6 +638,7 @@
 
     @media (max-width: 460px) {
       .topbar { display: block; }
+      .reward-topline { justify-content: flex-start; flex-wrap: wrap; }
       .reward-grid { grid-template-columns: 1fr; }
       .reward-image { height: 210px; }
       .nav { gap: 8px; }
@@ -917,7 +912,6 @@
 
             <div class="reward-body">
               <div class="reward-topline">
-                <span class="reward-label">徽章兌換物</span>
                 <span class="badge-cost">★ ${escapeHTML(reward.cost)} 枚</span>
                 <span class="stock-badge ${stockInfo.className}">${escapeHTML(stockInfo.label)}</span>
               </div>
