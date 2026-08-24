@@ -3,224 +3,384 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>活動花絮</title>
+  <meta name="theme-color" content="#f7cf73" />
+  <meta name="description" content="超好超人活動精彩時刻與兌換紀錄。" />
+  <title>超好超人｜精彩時刻</title>
   <style>
     :root {
-      --text: #1d2940;
-      --muted: #5c6d86;
-      --line: rgba(255, 255, 255, 0.45);
-      --accent: #6a5cff;
-      --accent-2: #4fa3ff;
-      --card: rgba(255, 255, 255, 0.82);
-      --card-2: rgba(255, 255, 255, 0.74);
-      --shadow: 0 10px 30px rgba(31, 45, 76, 0.12);
-      --radius: 20px;
+      --yellow: #f7cf73;
+      --yellow-soft: #fff3cb;
+      --yellow-deep: #e9b94f;
+      --blue: #a8d9e1;
+      --blue-soft: #dff3f6;
+      --blue-deep: #65b6c7;
+      --ink: #211f1b;
+      --muted: #6f6a61;
+      --paper: #fffaf0;
+      --white: #ffffff;
+      --border: rgba(33, 31, 27, 0.12);
+      --shadow: 0 18px 50px rgba(94, 67, 16, 0.14);
+      --shadow-soft: 0 10px 28px rgba(94, 67, 16, 0.10);
+      --radius-xl: 34px;
+      --radius-lg: 26px;
+      --radius-md: 18px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      min-height: 100%;
-    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
+      color: var(--ink);
+      background: var(--paper);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
-        "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
-      color: var(--text);
-      position: relative;
-      overflow-x: hidden;
-      background: #eaf2ff;
+        "PingFang TC", "Microsoft JhengHei", sans-serif;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image: url("assets/backgrounds/claw-bg.jpg");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      filter: brightness(0.9) saturate(1.05);
-      z-index: -2;
-    }
+    a { color: inherit; }
+    img { display: block; max-width: 100%; }
+    button { font: inherit; }
 
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
+    .site-shell {
+      min-height: 100vh;
+      overflow: hidden;
       background:
-        linear-gradient(rgba(245, 249, 255, 0.72), rgba(245, 249, 255, 0.84)),
-        radial-gradient(circle at top left, rgba(255, 182, 193, 0.18), transparent 25rem),
-        radial-gradient(circle at top right, rgba(173, 216, 255, 0.18), transparent 25rem),
-        radial-gradient(circle at bottom left, rgba(255, 223, 186, 0.18), transparent 25rem);
-      z-index: -1;
+        radial-gradient(circle at 5% 10%, rgba(255,255,255,.58) 0 4px, transparent 5px),
+        radial-gradient(circle at 92% 18%, rgba(255,255,255,.58) 0 5px, transparent 6px),
+        radial-gradient(circle at 87% 31%, rgba(255,255,255,.34) 0 3px, transparent 4px),
+        linear-gradient(180deg, var(--yellow) 0 31%, var(--paper) 31% 100%);
     }
 
-    .page {
-      width: min(1120px, calc(100% - 32px));
-      margin: 32px auto 56px;
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
     }
 
-    .header {
+    /* ===== 共用導覽：與首頁／排行榜同一套超好超人風格 ===== */
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 30;
+      padding-top: 18px;
+    }
+
+    .nav-card {
       display: flex;
-      align-items: end;
+      align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
-      background: rgba(255, 255, 255, 0.70);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 22px 24px;
-      box-shadow: var(--shadow);
+      gap: 22px;
+      padding: 14px 18px 14px 22px;
+      border: 1px solid rgba(255,255,255,.75);
+      border-radius: 999px;
+      background: rgba(255,255,255,.91);
+      box-shadow: 0 12px 30px rgba(72, 51, 8, .10);
       backdrop-filter: blur(12px);
     }
 
-    h1 {
-      margin: 0;
-      font-size: clamp(30px, 4vw, 44px);
-      letter-spacing: 0.02em;
-    }
-
-    .subtitle {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .nav {
-      display: flex;
-      gap: 10px;
+    .brand {
+      display: inline-flex;
       align-items: center;
-      flex-wrap: wrap;
-      margin: 20px 0 26px;
-    }
-
-    .nav a {
-      color: var(--text);
+      gap: 10px;
       text-decoration: none;
-      font-weight: 800;
-      border: 1px solid rgba(255, 255, 255, 0.55);
-      background: rgba(255, 255, 255, 0.72);
+      font-size: 21px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--yellow-soft);
+      border: 2px solid var(--ink);
+      font-size: 22px;
+      transform: rotate(-5deg);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 850;
+      padding: 10px 13px;
       border-radius: 999px;
-      padding: 12px 18px;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
-      backdrop-filter: blur(10px);
+      transition: .2s ease;
     }
 
-    .nav a.active,
-    .nav a:hover {
-      color: #ffffff;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      border-color: transparent;
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: #d8f0f4;
+      transform: translateY(-1px);
     }
 
+    /* ===== Hero ===== */
     .hero {
       display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: 56px;
+      min-height: 430px;
+      padding: 68px 0 88px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.90);
+      box-shadow: 0 8px 20px rgba(90,64,9,.08);
+      font-weight: 900;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(50px, 7vw, 88px);
+      line-height: 1;
+      letter-spacing: .05em;
+      font-weight: 950;
+    }
+
+    .hero-copy p {
+      margin: 20px 0 0;
+      max-width: 620px;
+      color: #4a4439;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.85;
+      font-weight: 700;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 16px;
+      border: 1.5px solid rgba(33,31,27,.20);
+      border-radius: 999px;
+      background: rgba(255,255,255,.80);
+      box-shadow: 0 7px 18px rgba(90,64,9,.07);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .hero-art {
+      position: relative;
+      justify-self: end;
+      width: min(100%, 450px);
+      padding: 10px;
+      border-radius: 30px;
+      background: rgba(255,255,255,.48);
+      box-shadow: var(--shadow);
+      transform: rotate(1.3deg);
+    }
+
+    .hero-art::before,
+    .hero-art::after {
+      position: absolute;
+      z-index: 2;
+      color: #fff8dc;
+      text-shadow: 0 2px 0 rgba(33,31,27,.15);
+      pointer-events: none;
+    }
+    .hero-art::before { content: "✦"; left: -28px; top: 16%; font-size: 40px; transform: rotate(-14deg); }
+    .hero-art::after { content: "♡"; right: -26px; bottom: 12%; font-size: 42px; transform: rotate(10deg); }
+
+    .hero-art img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: 50% 48%;
+      border-radius: 22px;
+      border: 3px solid rgba(33,31,27,.75);
+      background: var(--yellow);
+    }
+
+    .speech {
+      position: absolute;
+      left: -34px;
+      bottom: -24px;
+      z-index: 3;
+      padding: 13px 18px;
+      border: 2px solid var(--ink);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 4px 5px 0 rgba(33,31,27,.12);
+      font-weight: 950;
+      transform: rotate(-4deg);
+    }
+
+    .speech::after {
+      content: "";
+      position: absolute;
+      right: 26px;
+      bottom: -10px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-right: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      transform: rotate(45deg);
+    }
+
+    /* ===== 內容波浪 ===== */
+    .content-wave {
+      position: relative;
+      background: var(--paper);
+      padding: 74px 0 76px;
+    }
+
+    .content-wave::before {
+      content: "";
+      position: absolute;
+      left: -5%;
+      right: -5%;
+      top: -42px;
+      height: 86px;
+      background: var(--paper);
+      border-radius: 50% 50% 0 0 / 58% 58% 0 0;
+      transform: rotate(-1deg);
+    }
+
+    .section-heading {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .section-heading .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 8px;
+      color: var(--blue-deep);
+      font-size: 14px;
+      font-weight: 950;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 950;
+      letter-spacing: .06em;
+    }
+
+    .section-heading p {
+      margin: 10px auto 0;
+      max-width: 640px;
+      color: var(--muted);
+      line-height: 1.8;
+      font-weight: 700;
+    }
+
+    /* ===== 主打照片 + 摘要 ===== */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.42fr) minmax(290px, .58fr);
       gap: 22px;
-      margin-bottom: 24px;
+      align-items: stretch;
+      margin-bottom: 32px;
     }
 
     .slideshow,
     .featured-info,
     .moments-wrap {
-      background: rgba(255, 255, 255, 0.62);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
+      border: 1px solid rgba(33,31,27,.10);
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,.94);
+      box-shadow: var(--shadow-soft);
     }
 
     .slideshow {
-      overflow: hidden;
       position: relative;
-      min-height: 520px;
+      min-height: 540px;
+      overflow: hidden;
+      border: 3px solid rgba(33,31,27,.78);
+      background: var(--blue-soft);
     }
 
     .slide-photo {
       width: 100%;
-      height: 520px;
+      height: 540px;
       object-fit: cover;
-      display: block;
-      background: rgba(241, 247, 255, 0.70);
+      background: var(--blue-soft);
     }
 
     .slide-gradient {
       position: absolute;
       inset: auto 0 0;
-      min-height: 42%;
-      background: linear-gradient(transparent, rgba(20, 30, 50, 0.72));
+      height: 52%;
+      background: linear-gradient(transparent, rgba(23, 23, 20, .80));
       pointer-events: none;
     }
 
     .slide-caption {
       position: absolute;
-      left: 24px;
-      right: 24px;
-      bottom: 22px;
-      color: #ffffff;
+      left: 28px;
+      right: 28px;
+      bottom: 25px;
+      color: #fff;
+      z-index: 2;
     }
 
     .slide-time {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       margin-bottom: 10px;
-      padding: 7px 12px;
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,.30);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.22);
-      border: 1px solid rgba(255, 255, 255, 0.30);
+      background: rgba(255,255,255,.20);
+      backdrop-filter: blur(9px);
       font-size: 13px;
-      font-weight: 850;
-      backdrop-filter: blur(10px);
+      font-weight: 900;
     }
 
     .slide-title {
       margin: 0 0 8px;
-      font-size: clamp(24px, 3vw, 38px);
-      line-height: 1.18;
+      font-size: clamp(25px, 3vw, 38px);
+      line-height: 1.22;
       font-weight: 950;
-      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+      text-shadow: 0 3px 13px rgba(0,0,0,.25);
     }
 
     .slide-desc {
       margin: 0;
       max-width: 720px;
       font-size: 16px;
-      line-height: 1.65;
-      font-weight: 650;
-      opacity: 0.95;
-    }
-
-    .slide-controls {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      display: flex;
-      gap: 8px;
-    }
-
-    .slide-controls button {
-      width: 42px;
-      height: 42px;
-      border: 1px solid rgba(255, 255, 255, 0.42);
-      border-radius: 999px;
-      color: #ffffff;
-      background: rgba(20, 30, 50, 0.24);
-      cursor: pointer;
-      font-size: 18px;
-      font-weight: 900;
-      backdrop-filter: blur(10px);
+      line-height: 1.7;
+      font-weight: 750;
+      opacity: .96;
     }
 
     .dots {
       position: absolute;
       left: 24px;
-      top: 22px;
+      top: 24px;
+      z-index: 3;
       display: flex;
       gap: 8px;
     }
@@ -228,50 +388,97 @@
     .dot {
       width: 10px;
       height: 10px;
+      padding: 0;
       border: 0;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.48);
+      background: rgba(255,255,255,.52);
       cursor: pointer;
+      transition: .2s ease;
     }
 
-    .dot.active {
-      width: 28px;
-      background: #ffffff;
+    .dot.active { width: 30px; background: #fff; }
+
+    .slide-controls {
+      position: absolute;
+      right: 22px;
+      top: 20px;
+      z-index: 3;
+      display: flex;
+      gap: 8px;
     }
+
+    .slide-controls button {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 2px solid rgba(255,255,255,.80);
+      border-radius: 50%;
+      color: var(--ink);
+      background: rgba(255,255,255,.92);
+      box-shadow: 3px 4px 0 rgba(33,31,27,.14);
+      cursor: pointer;
+      font-size: 22px;
+      font-weight: 950;
+      transition: .2s ease;
+    }
+
+    .slide-controls button:hover { transform: translateY(-2px); }
+    .slide-controls button:disabled { opacity: .45; cursor: default; transform: none; }
 
     .featured-info {
-      padding: 24px;
+      position: relative;
+      padding: 26px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 18px;
+      gap: 24px;
+    }
+
+    .featured-info::after {
+      content: "★";
+      position: absolute;
+      right: -15px;
+      top: -18px;
+      color: var(--yellow-soft);
+      font-size: 110px;
+      transform: rotate(15deg);
+      pointer-events: none;
     }
 
     .info-label {
+      position: relative;
+      z-index: 1;
       display: inline-flex;
       align-self: flex-start;
-      color: #255782;
-      background: rgba(243, 248, 255, 0.82);
-      border: 1px solid rgba(180, 211, 246, 0.78);
+      padding: 9px 14px;
+      border: 1.5px solid rgba(33,31,27,.14);
       border-radius: 999px;
-      padding: 8px 14px;
-      font-size: 14px;
-      font-weight: 850;
+      background: var(--blue-soft);
+      color: #2f7483;
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: .05em;
     }
 
     .info-title {
+      position: relative;
+      z-index: 1;
       margin: 16px 0 10px;
-      font-size: 26px;
-      line-height: 1.25;
+      font-size: clamp(24px, 3vw, 32px);
+      line-height: 1.35;
       font-weight: 950;
     }
 
     .info-text {
+      position: relative;
+      z-index: 1;
       margin: 0;
       color: var(--muted);
-      font-size: 16px;
-      line-height: 1.75;
-      font-weight: 650;
+      font-size: 15px;
+      line-height: 1.8;
+      font-weight: 700;
     }
 
     .stats {
@@ -280,49 +487,64 @@
     }
 
     .stat {
-      padding: 16px;
-      border-radius: 18px;
-      background: linear-gradient(180deg, var(--card), var(--card-2));
-      border: 1px solid rgba(255, 255, 255, 0.55);
+      position: relative;
+      padding: 17px 18px;
+      border: 1.5px solid rgba(33,31,27,.11);
+      border-radius: 20px;
+      background: #fffdf8;
     }
 
+    .stat:nth-child(2) { background: var(--yellow-soft); }
+
     .stat-number {
-      font-size: 28px;
+      font-size: clamp(24px, 3vw, 31px);
       font-weight: 950;
-      color: #4f6cff;
+      color: #2f8fa2;
+      overflow-wrap: anywhere;
     }
 
     .stat-text {
-      margin-top: 4px;
+      margin-top: 5px;
       color: var(--muted);
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 850;
     }
 
+    /* ===== 相簿 ===== */
     .moments-wrap {
-      padding: 20px;
+      padding: 26px;
     }
 
-    .section-head {
+    .moments-head {
       display: flex;
       align-items: end;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 16px;
-      padding: 0 4px;
+      gap: 18px;
+      margin-bottom: 20px;
     }
 
-    .section-head h2 {
+    .moments-head h2 {
       margin: 0;
-      font-size: 24px;
+      font-size: clamp(27px, 3vw, 36px);
       font-weight: 950;
+      letter-spacing: .04em;
     }
 
-    .section-head p {
-      margin: 6px 0 0;
+    .moments-head p {
+      margin: 7px 0 0;
       color: var(--muted);
       font-size: 14px;
-      font-weight: 650;
+      font-weight: 700;
+    }
+
+    .moments-badge {
+      flex: 0 0 auto;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #2f7483;
+      font-size: 13px;
+      font-weight: 950;
     }
 
     .moments-grid {
@@ -333,202 +555,264 @@
 
     .moment-card {
       overflow: hidden;
-      border-radius: 22px;
-      background: linear-gradient(180deg, var(--card), var(--card-2));
-      border: 1px solid rgba(255, 255, 255, 0.55);
-      box-shadow: 0 8px 22px rgba(31, 45, 76, 0.08);
+      border: 1.5px solid rgba(33,31,27,.11);
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(94,67,16,.08);
+      transition: transform .22s ease, box-shadow .22s ease;
+    }
+
+    .moment-card:hover {
+      transform: translateY(-4px) rotate(-.25deg);
+      box-shadow: 0 14px 28px rgba(94,67,16,.13);
+    }
+
+    .moment-photo-wrap {
+      position: relative;
+      overflow: hidden;
+      background: var(--blue-soft);
     }
 
     .moment-card img {
       width: 100%;
-      height: 260px;
+      height: 270px;
       object-fit: cover;
-      display: block;
-      background: rgba(241, 247, 255, 0.70);
+      transition: transform .35s ease;
     }
 
-    .moment-body {
-      padding: 18px 18px 20px;
+    .moment-card:hover img { transform: scale(1.025); }
+
+    .moment-photo-wrap::after {
+      content: "♡";
+      position: absolute;
+      right: 14px;
+      top: 12px;
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 2px solid rgba(33,31,27,.75);
+      border-radius: 50%;
+      background: rgba(255,255,255,.92);
+      color: #ef8d8d;
+      font-size: 20px;
+      font-weight: 950;
     }
+
+    .moment-body { padding: 19px 19px 22px; }
 
     .moment-time {
       display: inline-flex;
       margin-bottom: 10px;
-      color: #4f6cff;
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 0.02em;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: var(--yellow-soft);
+      color: #81601d;
+      font-size: 12px;
+      font-weight: 950;
     }
 
     .moment-title {
-      margin: 0 0 8px;
-      font-size: 20px;
-      line-height: 1.3;
+      margin: 0 0 9px;
+      font-size: 19px;
+      line-height: 1.45;
       font-weight: 950;
     }
 
     .moment-desc {
       margin: 0;
       color: var(--muted);
-      font-size: 15px;
-      line-height: 1.65;
-      font-weight: 650;
+      font-size: 14px;
+      line-height: 1.7;
+      font-weight: 700;
     }
 
     .empty {
       display: none;
-      text-align: center;
+      margin: 0;
       padding: 54px 20px;
-      color: var(--muted);
-      font-weight: 800;
-      border: 1px dashed rgba(255, 255, 255, 0.55);
+      border: 2px dashed rgba(33,31,27,.18);
       border-radius: 24px;
-      background: rgba(255, 255, 255, 0.62);
-      backdrop-filter: blur(10px);
+      background: #fffdf8;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 850;
     }
 
-    @media (max-width: 940px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-
-      .slideshow,
-      .slide-photo {
-        min-height: auto;
-        height: 460px;
-      }
-
-      .moments-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    .footer-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 30px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
     }
 
-    @media (max-width: 640px) {
-      .page {
-        width: min(100% - 20px, 1120px);
-        margin: 20px auto 28px;
-      }
+    @media (max-width: 980px) {
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; gap: 34px; padding-top: 52px; }
+      .hero-copy { text-align: center; }
+      .hero-copy p { margin-inline: auto; }
+      .hero-meta { justify-content: center; }
+      .hero-art { justify-self: center; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .featured-info { display: grid; grid-template-columns: 1fr 1fr; align-items: center; }
+      .stats { grid-column: 2; grid-row: 1 / span 2; }
+      .moments-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
 
-      .header {
-        padding: 18px;
-        border-radius: 20px;
-      }
+    @media (max-width: 680px) {
+      .container { width: min(100% - 20px, 1180px); }
+      .topbar { top: 6px; padding-top: 10px; }
+      .nav-card { padding: 10px 13px; border-radius: 22px; }
+      .brand { font-size: 18px; }
+      .brand-mark { width: 38px; height: 38px; }
+      .hero { min-height: auto; padding: 48px 0 70px; }
+      .hero h1 { font-size: clamp(44px, 15vw, 66px); }
+      .hero-art { width: min(90%, 430px); }
+      .speech { left: -12px; bottom: -18px; font-size: 13px; }
+      .content-wave { padding-top: 54px; }
+      .feature-grid { gap: 16px; }
+      .slideshow, .slide-photo { min-height: 430px; height: 430px; }
+      .slide-caption { left: 18px; right: 18px; bottom: 18px; }
+      .slide-controls { right: 14px; top: 14px; }
+      .dots { left: 16px; top: 17px; }
+      .featured-info { display: flex; padding: 20px; }
+      .stats { width: 100%; }
+      .moments-wrap { padding: 18px; border-radius: 26px; }
+      .moments-head { display: block; }
+      .moments-badge { display: inline-flex; margin-top: 12px; }
+      .moments-grid { grid-template-columns: 1fr; }
+      .moment-card img { height: 250px; }
+    }
 
-      .nav a {
-        padding: 10px 14px;
-        font-size: 15px;
-      }
-
-      .slideshow,
-      .slide-photo {
-        height: 420px;
-        border-radius: 20px;
-      }
-
-      .slide-caption {
-        left: 18px;
-        right: 18px;
-        bottom: 18px;
-      }
-
-      .dots {
-        left: 18px;
-        top: 18px;
-      }
-
-      .slide-controls {
-        right: 16px;
-        top: 14px;
-      }
-
-      .featured-info,
-      .moments-wrap {
-        padding: 16px;
-        border-radius: 20px;
-      }
-
-      .moments-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-
-      .moment-card img {
-        height: 240px;
-      }
-
-      .section-head {
-        display: block;
-      }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
     }
   </style>
 </head>
 <body>
-  <main class="page">
-    <header class="header">
-      <div>
-        <h1>活動花絮</h1>
-        <p class="subtitle">記錄開心時刻</p>
+  <div class="site-shell">
+    <header class="topbar">
+      <div class="container">
+        <div class="nav-card">
+          <a class="brand" href="index.html" aria-label="超好超人首頁">
+            <span class="brand-mark" aria-hidden="true">☆</span>
+            <span>超好超人</span>
+          </a>
+
+          <nav class="nav-links" aria-label="主要導覽">
+            <a href="index.html">首頁</a>
+            <a href="ranking.html">點數排行榜</a>
+            <a class="active" href="moments.html">精彩時刻</a>
+            <a href="badge.html">徽章</a>
+          </nav>
+        </div>
       </div>
     </header>
 
-    <nav class="nav" aria-label="頁面導覽">
-      <a href="index.html">排行榜</a>
-      <a href="shop.html">點數兌換</a>
-      <a href="badge.html">吉伊卡哇徽章</a>
-      <a class="active" href="moments.html">活動花絮</a>
-    </nav>
-
-    <section class="hero" aria-label="兌換照片播放區">
-      <div class="slideshow">
-        <img id="slidePhoto" class="slide-photo" src="" alt="">
-        <div class="slide-gradient"></div>
-
-        <div id="dots" class="dots" aria-label="照片切換"></div>
-
-        <div class="slide-controls">
-          <button type="button" id="prevBtn" aria-label="上一張">‹</button>
-          <button type="button" id="nextBtn" aria-label="下一張">›</button>
-        </div>
-
-        <div class="slide-caption">
-          <div id="slideTime" class="slide-time"></div>
-          <h2 id="slideTitle" class="slide-title"></h2>
-          <p id="slideDesc" class="slide-desc"></p>
-        </div>
-      </div>
-
-      <aside class="featured-info" aria-label="活動摘要">
-        <div>
-          <span class="info-label">Happy Moments</span>
-          <h2 class="info-title">每一次兌換，都是努力集點後的小小成就感</h2>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <div id="totalMoments" class="stat-number">0</div>
-            <div class="stat-text">已記錄兌換照片</div>
-          </div>
-          <div class="stat">
-            <div class="stat-number">2027/04/30</div>
-            <div class="stat-text">活動點數使用期限</div>
+    <main>
+      <section class="container hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <span class="eyebrow">超好回憶收藏中 <span aria-hidden="true">♡</span></span>
+          <h1 id="hero-title">精彩時刻</h1>
+          <p>
+            每一次集點、兌換與開心合照，都值得被好好記住。<br />
+            一起看看大家把可愛好禮帶回家的超好瞬間！
+          </p>
+          <div class="hero-meta" aria-label="活動摘要">
+            <span class="meta-pill">📷 <span id="heroMomentCount">0</span> 筆精彩紀錄</span>
+            <span class="meta-pill">🎁 集點兌換活動</span>
+            <span class="meta-pill">⭐ 超好超人陪你一起玩</span>
           </div>
         </div>
-      </aside>
-    </section>
 
-    <section class="moments-wrap" aria-label="兌換紀錄">
-      <div class="section-head">
-        <div>
-          <h2>兌換紀錄</h2>
+        <div class="hero-art" aria-label="超好超人主視覺">
+          <img
+            src="assets/home/500737159_122180696822326608_3144273302568883498_n.jpg"
+            alt="超好超人插畫"
+          />
+          <div class="speech">今天也超好運！</div>
         </div>
-      </div>
+      </section>
 
-      <div id="momentsGrid" class="moments-grid"></div>
-      <p id="emptyMessage" class="empty">目前尚未新增兌換照片</p>
-    </section>
-  </main>
+      <section class="content-wave">
+        <div class="container">
+          <div class="section-heading">
+            <div class="kicker"><span aria-hidden="true">✦</span> Happy Moments <span aria-hidden="true">✦</span></div>
+            <h2>超好時刻</h2>
+            <p>把成功兌換獎品的瞬間留在這裡，下一個登上版面的可能就是你！</p>
+          </div>
+
+          <section class="feature-grid" aria-label="精選活動照片">
+            <div class="slideshow">
+              <img id="slidePhoto" class="slide-photo" src="" alt="" />
+              <div class="slide-gradient"></div>
+
+              <div id="dots" class="dots" aria-label="照片切換"></div>
+
+              <div class="slide-controls">
+                <button type="button" id="prevBtn" aria-label="上一張">‹</button>
+                <button type="button" id="nextBtn" aria-label="下一張">›</button>
+              </div>
+
+              <div class="slide-caption">
+                <div id="slideTime" class="slide-time"></div>
+                <h2 id="slideTitle" class="slide-title"></h2>
+                <p id="slideDesc" class="slide-desc"></p>
+              </div>
+            </div>
+
+            <aside class="featured-info" aria-label="活動摘要">
+              <div>
+                <span class="info-label">超好小紀錄</span>
+                <h2 class="info-title">每一次兌換，都是努力集點後的小小成就感</h2>
+                <p class="info-text">
+                  照片會依照你在下方 <code>moments</code> 資料新增的內容自動出現在輪播與相簿中。
+                </p>
+              </div>
+
+              <div class="stats">
+                <div class="stat">
+                  <div id="totalMoments" class="stat-number">0</div>
+                  <div class="stat-text">已記錄兌換照片</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-number">2027/04/30</div>
+                  <div class="stat-text">活動點數使用期限</div>
+                </div>
+              </div>
+            </aside>
+          </section>
+
+          <section class="moments-wrap" aria-label="兌換紀錄">
+            <div class="moments-head">
+              <div>
+                <h2>兌換紀錄</h2>
+                <p>成功兌換的照片與紀錄會依新增順序顯示。</p>
+              </div>
+              <span class="moments-badge">超好相簿 ♡</span>
+            </div>
+
+            <div id="momentsGrid" class="moments-grid"></div>
+            <p id="emptyMessage" class="empty">目前尚未新增兌換照片</p>
+          </section>
+
+          <div class="footer-note">
+            <span aria-hidden="true">✦</span>
+            <span>超好超人・把每一份快樂都收進回憶裡</span>
+            <span aria-hidden="true">✦</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <script>
+    // 新增活動花絮時，只需要在這個陣列增加一筆資料。
     const moments = [
       {
         time: "2026/07/20 00:03",
@@ -548,6 +832,7 @@
     const momentsGrid = document.querySelector("#momentsGrid");
     const emptyMessage = document.querySelector("#emptyMessage");
     const totalMoments = document.querySelector("#totalMoments");
+    const heroMomentCount = document.querySelector("#heroMomentCount");
 
     let currentIndex = 0;
     let timer = null;
@@ -565,10 +850,9 @@
       if (!moments.length) return;
 
       const item = moments[index];
-
       slidePhoto.src = item.image;
       slidePhoto.alt = item.title;
-      slideTime.textContent = item.time;
+      slideTime.textContent = `📷 ${item.time}`;
       slideTitle.textContent = item.title;
       slideDesc.textContent = item.desc;
 
@@ -578,6 +862,7 @@
     }
 
     function goToSlide(index) {
+      if (!moments.length) return;
       currentIndex = (index + moments.length) % moments.length;
       renderSlide(currentIndex);
       restartTimer();
@@ -585,6 +870,7 @@
 
     function restartTimer() {
       clearInterval(timer);
+      if (moments.length <= 1) return;
       timer = setInterval(() => {
         goToSlide(currentIndex + 1);
       }, 4500);
@@ -605,14 +891,27 @@
           goToSlide(Number(dot.dataset.index));
         });
       });
+
+      const onlyOne = moments.length <= 1;
+      prevBtn.disabled = onlyOne;
+      nextBtn.disabled = onlyOne;
+      prevBtn.style.display = moments.length ? "grid" : "none";
+      nextBtn.style.display = moments.length ? "grid" : "none";
+      dots.style.display = moments.length > 1 ? "flex" : "none";
     }
 
     function renderMoments() {
       totalMoments.textContent = moments.length;
+      heroMomentCount.textContent = moments.length;
 
       if (!moments.length) {
         emptyMessage.style.display = "block";
         momentsGrid.innerHTML = "";
+        slidePhoto.removeAttribute("src");
+        slidePhoto.alt = "目前尚未新增兌換照片";
+        slideTime.textContent = "";
+        slideTitle.textContent = "目前尚未新增兌換照片";
+        slideDesc.textContent = "新增 moments 資料後，照片就會自動顯示在這裡。";
         return;
       }
 
@@ -620,7 +919,9 @@
 
       momentsGrid.innerHTML = moments.map(item => `
         <article class="moment-card">
-          <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy">
+          <div class="moment-photo-wrap">
+            <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" />
+          </div>
           <div class="moment-body">
             <time class="moment-time">${escapeHTML(item.time)}</time>
             <h3 class="moment-title">${escapeHTML(item.title)}</h3>
@@ -635,7 +936,7 @@
 
     renderDots();
     renderMoments();
-    renderSlide(currentIndex);
+    if (moments.length) renderSlide(currentIndex);
     restartTimer();
   </script>
 </body>
