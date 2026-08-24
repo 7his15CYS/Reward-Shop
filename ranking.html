@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7cf73" />
+  <meta name="description" content="機台集點活動點數排行榜與存點紀錄。" />
+  <title>超好超人｜點數排行榜</title>
+  <style>
+    :root {
+      --yellow: #f7cf73;
+      --yellow-soft: #fff3cb;
+      --yellow-deep: #e9b94f;
+      --blue: #a8d9e1;
+      --blue-soft: #dff3f6;
+      --blue-deep: #65b6c7;
+      --ink: #211f1b;
+      --muted: #6f6a61;
+      --paper: #fffaf0;
+      --white: #ffffff;
+      --border: rgba(33, 31, 27, 0.12);
+      --shadow: 0 18px 50px rgba(94, 67, 16, 0.14);
+      --shadow-soft: 0 10px 28px rgba(94, 67, 16, 0.10);
+      --radius-xl: 34px;
+      --radius-lg: 26px;
+      --radius-md: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
+        "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    a { color: inherit; }
+    img { display: block; max-width: 100%; }
+    button { font: inherit; }
+
+    .site-shell {
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 6% 10%, rgba(255,255,255,.55) 0 4px, transparent 5px),
+        radial-gradient(circle at 91% 18%, rgba(255,255,255,.55) 0 5px, transparent 6px),
+        linear-gradient(180deg, var(--yellow) 0 33%, var(--paper) 33% 100%);
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 30;
+      padding-top: 18px;
+    }
+
+    .nav-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+      padding: 14px 18px 14px 22px;
+      border: 1px solid rgba(255,255,255,.75);
+      border-radius: 999px;
+      background: rgba(255,255,255,.91);
+      box-shadow: 0 12px 30px rgba(72, 51, 8, .10);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-size: 21px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--yellow-soft);
+      border: 2px solid var(--ink);
+      font-size: 22px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 850;
+      padding: 10px 13px;
+      border-radius: 999px;
+      transition: .2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: #d8f0f4;
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: 54px;
+      min-height: 420px;
+      padding: 68px 0 86px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 8px 20px rgba(90,64,9,.08);
+      font-weight: 900;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(50px, 7vw, 88px);
+      line-height: 1;
+      letter-spacing: .05em;
+      font-weight: 950;
+    }
+
+    .hero-copy p {
+      margin: 20px 0 0;
+      max-width: 620px;
+      color: #4a4439;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.85;
+      font-weight: 700;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 16px;
+      border: 1.5px solid rgba(33,31,27,.20);
+      border-radius: 999px;
+      background: rgba(255,255,255,.78);
+      box-shadow: 0 7px 18px rgba(90,64,9,.07);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .hero-art {
+      position: relative;
+      justify-self: end;
+      width: min(100%, 430px);
+      padding: 10px;
+      border-radius: 30px;
+      background: rgba(255,255,255,.48);
+      box-shadow: var(--shadow);
+      transform: rotate(1.5deg);
+    }
+
+    .hero-art::before,
+    .hero-art::after {
+      position: absolute;
+      z-index: 2;
+      color: #fff8dc;
+      text-shadow: 0 2px 0 rgba(33,31,27,.15);
+      pointer-events: none;
+    }
+    .hero-art::before { content: "✦"; left: -26px; top: 18%; font-size: 38px; transform: rotate(-12deg); }
+    .hero-art::after { content: "♡"; right: -26px; bottom: 12%; font-size: 40px; transform: rotate(10deg); }
+
+    .hero-art img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: 50% 47%;
+      border-radius: 22px;
+      border: 3px solid rgba(33,31,27,.75);
+      background: var(--yellow);
+    }
+
+    .content-wave {
+      position: relative;
+      background: var(--paper);
+      padding: 74px 0 70px;
+    }
+
+    .content-wave::before {
+      content: "";
+      position: absolute;
+      left: -4%;
+      right: -4%;
+      top: -34px;
+      height: 72px;
+      background: var(--paper);
+      border-radius: 50% 45% 0 0 / 100% 100% 0 0;
+    }
+
+    .section-head {
+      position: relative;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .section-head .kicker {
+      display: block;
+      color: var(--blue-deep);
+      font-size: 14px;
+      font-weight: 950;
+      letter-spacing: .22em;
+      margin-bottom: 8px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 52px);
+      letter-spacing: .08em;
+    }
+
+    .section-head p {
+      margin: 12px auto 0;
+      max-width: 690px;
+      color: var(--muted);
+      line-height: 1.8;
+      font-weight: 650;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .summary-card {
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: rgba(255,255,255,.82);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .summary-label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      margin-bottom: 6px;
+    }
+
+    .summary-value {
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 950;
+    }
+
+    .podium {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .podium-card {
+      position: relative;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      padding: 28px 18px 24px;
+      border: 2px solid rgba(33,31,27,.13);
+      border-radius: 28px;
+      background: #fff;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    .podium-card.first {
+      min-height: 240px;
+      background: linear-gradient(180deg, #fff8da 0%, #ffffff 72%);
+      border-color: rgba(233,185,79,.5);
+      transform: translateY(-8px);
+    }
+    .podium-card.second { background: linear-gradient(180deg, #eef7f9 0%, #ffffff 72%); }
+    .podium-card.third { background: linear-gradient(180deg, #fff0dd 0%, #ffffff 72%); }
+
+    .podium-rank {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border: 2px solid var(--ink);
+      border-radius: 18px;
+      background: var(--yellow-soft);
+      font-size: 21px;
+      font-weight: 950;
+      box-shadow: 4px 5px 0 rgba(33,31,27,.10);
+      transform: rotate(-3deg);
+    }
+    .first .podium-rank { background: #ffe075; }
+    .second .podium-rank { background: #d8edf1; }
+    .third .podium-rank { background: #ffd6ad; }
+
+    .podium-id {
+      max-width: 100%;
+      font-size: clamp(18px, 2.2vw, 25px);
+      font-weight: 950;
+      overflow-wrap: anywhere;
+    }
+
+    .podium-points {
+      color: var(--blue-deep);
+      font-size: 23px;
+      font-weight: 950;
+    }
+
+    .leaderboard-card,
+    .notice,
+    .records-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow);
+    }
+
+    .leaderboard-card { padding: 12px 18px 18px; }
+
+    .table-head,
+    .rank-row {
+      display: grid;
+      grid-template-columns: 90px minmax(0, 1fr) 120px;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .table-head {
+      padding: 12px 18px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .12em;
+    }
+
+    .rank-list { display: grid; gap: 10px; }
+
+    .rank-row {
+      min-height: 76px;
+      padding: 14px 18px;
+      border: 1px solid rgba(33,31,27,.10);
+      border-radius: 20px;
+      background: #fffdf8;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .rank-row:hover {
+      transform: translateY(-2px);
+      border-color: rgba(101,182,199,.45);
+      box-shadow: 0 10px 24px rgba(94,67,16,.08);
+    }
+
+    .rank-number {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    .rank-number::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--blue);
+      border: 1px solid rgba(33,31,27,.22);
+    }
+
+    .player-id {
+      min-width: 0;
+      font-size: 17px;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .player-points {
+      justify-self: end;
+      color: var(--blue-deep);
+      font-size: 18px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .notice {
+      margin-top: 28px;
+      padding: 24px 26px;
+      background: #fff6d9;
+      border-style: dashed;
+    }
+
+    .notice h2,
+    .records-title {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 950;
+    }
+
+    .notice p {
+      margin: 12px 0 0;
+      color: #5c554a;
+      font-size: 13px;
+      line-height: 1.9;
+      font-weight: 650;
+    }
+
+    .records-wrap {
+      margin-top: 28px;
+      padding: 26px;
+    }
+
+    .records-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .records-subtitle {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .records-count {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #397f8d;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .records-table-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(33,31,27,.09);
+      border-radius: 20px;
+    }
+
+    .records-table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      background: #fffdf9;
+    }
+
+    .records-table th,
+    .records-table td {
+      padding: 15px 16px;
+      border-bottom: 1px solid rgba(33,31,27,.08);
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    .records-table th {
+      background: #f8f3e9;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .09em;
+      font-weight: 950;
+    }
+
+    .records-table tr:last-child td { border-bottom: none; }
+    .record-id { font-weight: 850; }
+    .record-change { font-weight: 950; white-space: nowrap; }
+    .record-change.plus { color: #2d8fa2; }
+    .record-change.minus { color: #d25a50; }
+    .record-note { color: var(--muted); line-height: 1.55; }
+
+    .footer {
+      padding: 30px 0 36px;
+      text-align: center;
+      color: #786f62;
+      font-size: 13px;
+      background: var(--paper);
+    }
+
+    @media (max-width: 900px) {
+      .nav-card { border-radius: 28px; align-items: flex-start; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; gap: 30px; padding-top: 52px; }
+      .hero-copy { text-align: center; }
+      .hero-copy p { margin-inline: auto; }
+      .hero-meta { justify-content: center; }
+      .hero-art { justify-self: center; width: min(100%, 520px); transform: none; }
+      .podium { grid-template-columns: 1fr; align-items: stretch; }
+      .podium-card,
+      .podium-card.first { min-height: 150px; transform: none; }
+      .summary-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .container { width: min(100% - 22px, 1180px); }
+      .topbar { top: 7px; padding-top: 9px; }
+      .nav-card { padding: 10px 14px; }
+      .brand { font-size: 18px; }
+      .brand-mark { width: 36px; height: 36px; font-size: 18px; }
+      .hero { min-height: auto; padding: 42px 0 66px; }
+      .hero h1 { font-size: clamp(44px, 15vw, 66px); }
+      .hero-art { padding: 8px; border-radius: 24px; }
+      .hero-art img { border-radius: 18px; }
+      .content-wave { padding-top: 62px; }
+      .leaderboard-card { padding: 10px; border-radius: 24px; }
+      .table-head,
+      .rank-row { grid-template-columns: 62px minmax(0, 1fr) 82px; gap: 8px; }
+      .table-head { padding-inline: 10px; font-size: 10px; }
+      .rank-row { padding: 12px 10px; min-height: 68px; }
+      .rank-number, .player-id, .player-points { font-size: 15px; }
+      .notice, .records-wrap { padding: 20px; border-radius: 24px; }
+      .records-heading { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <div class="container">
+        <div class="nav-card">
+          <a class="brand" href="index.html" aria-label="回到首頁">
+            <span class="brand-mark" aria-hidden="true">✦</span>
+            <span>超好超人</span>
+          </a>
+
+          <nav class="nav-links" aria-label="主要導覽">
+            <a href="index.html">首頁</a>
+            <a class="active" href="ranking.html">點數排行榜</a>
+            <a href="shop.html">兌換商店</a>
+            <a href="moments.html">精彩時刻</a>
+            <a href="badge.html">徽章</a>
+            <a href="token.html">代幣</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="container hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <span class="eyebrow">機台集點活動 <span aria-hidden="true">⭐</span></span>
+          <h1 id="hero-title">點數排行榜</h1>
+          <p>
+            看看誰是目前的集點高手！排行榜會依活動點數持續更新，
+            累積點數還能兌換指定好禮。
+          </p>
+          <div class="hero-meta">
+            <span class="meta-pill">📍 臺北市大安區建國南路一段30號</span>
+            <span class="meta-pill">🗓 活動至 2027/04/30</span>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <img
+            src="assets/home/500737159_122180696822326608_3144273302568883498_n.jpg"
+            alt=""
+          />
+        </div>
+      </section>
+
+      <section class="content-wave" aria-labelledby="leaderboard-title">
+        <div class="container">
+          <div class="section-head">
+            <span class="kicker">POINTS LEADERBOARD</span>
+            <h2 id="leaderboard-title">目前排名</h2>
+            <p>下方顯示目前活動點數與存點紀錄；名次與點數內容可直接在此 HTML 的 JavaScript 資料區更新。</p>
+          </div>
+
+          <div class="summary-grid" aria-label="排行榜摘要">
+            <div class="summary-card">
+              <span class="summary-label">目前第一名</span>
+              <span class="summary-value" id="summaryLeader">—</span>
+            </div>
+            <div class="summary-card">
+              <span class="summary-label">參與人數</span>
+              <span class="summary-value" id="summaryPlayers">—</span>
+            </div>
+            <div class="summary-card">
+              <span class="summary-label">最高點數</span>
+              <span class="summary-value" id="summaryPoints">—</span>
+            </div>
+          </div>
+
+          <div id="podium" class="podium" aria-label="前三名"></div>
+
+          <section class="leaderboard-card" aria-label="完整點數排行榜">
+            <div class="table-head" aria-hidden="true">
+              <div>排行</div>
+              <div>ID</div>
+              <div style="text-align:right;">點數</div>
+            </div>
+            <div id="leaderboard" class="rank-list"></div>
+          </section>
+
+          <section class="notice" aria-label="活動說明">
+            <h2>活動說明</h2>
+            <p>
+              1. 本活動為免費參與之點數累積及兌換活動。活動點數僅限於本活動期間（至2027年4月30日）內使用，不具現金、儲值金、有價證券或其他貨幣價值，亦不得轉讓、折換現金、找零、兌換非本活動公告之商品，或作為其他用途。<br>
+              2. 獎品數量有限，依實際兌換情形為準，兌換完畢即止。<br>
+              3. 獎品圖片、尺寸、顏色、包裝及規格僅供參考，實際內容以實物為準。<br>
+              4. 如因活動執行需要、非可歸責於活動方之事由，或天災、系統異常、法令變更等不可抗力因素，致活動內容需調整、暫停、延後或終止時，活動方得於合理範圍內採取必要處理措施；如涉及重大變更，將另行公告或通知。<br>
+              5. 活動方保留對本活動辦法之說明、調整及補充之權利；相關內容如有未盡事宜，依活動方公告為準。
+            </p>
+          </section>
+
+          <section class="records-wrap" aria-label="存點紀錄">
+            <div class="records-heading">
+              <div>
+                <h2 class="records-title">存點紀錄</h2>
+                <p class="records-subtitle">手動紀錄點數異動時間、對象與變更內容。</p>
+              </div>
+              <span class="records-count" id="recordsCount">0 筆紀錄</span>
+            </div>
+
+            <div class="records-table-wrap">
+              <table class="records-table">
+                <thead>
+                  <tr>
+                    <th>時間</th>
+                    <th>ID</th>
+                    <th>點數變更</th>
+                    <th>備註</th>
+                  </tr>
+                </thead>
+                <tbody id="pointRecords"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">© 2026 超好超人 · 點數與兌換資訊以活動現場公告為準</div>
+    </footer>
+  </div>
+
+  <script>
+    // ===== 點數排行榜資料：之後更新名次／點數，只要改這裡 =====
+    const data = [
+      { rank: 1, id: "許炳宏", points: 87 },
+      { rank: 2, id: "萱小魚", points: 60 },
+      { rank: 3, id: "文嘉", points: 47 },
+      { rank: 4, id: "瑞玹", points: 23 },
+      { rank: 6, id: "I Lily", points: 20 },
+      { rank: 6, id: "燕子", points: 16 },
+      { rank: 7, id: "飛行荷蘭人", points: 16 },
+      { rank: 8, id: "士林權志龍", points: 15 },
+      { rank: 9, id: "胡綵楹", points: 14 },
+      { rank: 10, id: "圳峰有限公司-小王", points: 12 },
+      { rank: 11, id: "藥膳家妤", points: 12 },
+      { rank: 12, id: "莊文碩", points: 10 },
+      { rank: 13, id: "趙睿昱", points: 9 },
+      { rank: 14, id: "我要第一名", points: 10 },
+      { rank: 15, id: "王郁翔", points: 2 },
+      { rank: 16, id: "20", points: 2 },
+      { rank: 17, id: "Usagi", points: 1 },
+      { rank: 18, id: "Hachiware", points: 1 },
+      { rank: 19, id: "Kevin 黃", points: 1 }
+    ];
+
+    // ===== 存點紀錄：新增紀錄時，往陣列最上方加入一筆即可 =====
+    const pointLogs = [
+      { time: "2026/08/05 22:50", id: "藥膳家妤", change: "+7", note: "新增活動點數" },
+      { time: "2026/08/05 18:38", id: "趙睿昱", change: "+7", note: "新增活動點數" },
+      { time: "2026/08/05 14:53", id: "趙睿昱", change: "+2", note: "新增活動點數" },
+      { time: "2026/08/05 11:47", id: "文嘉", change: "+7", note: "新增活動點數" },
+      { time: "2026/08/04 20:35", id: "文嘉", change: "+12", note: "新增活動點數" },
+      { time: "2026/08/04 19:28", id: "莊文碩", change: "+10", note: "新增活動點數" },
+      { time: "2026/08/04 16:33", id: "文嘉", change: "+12", note: "新增活動點數" },
+      { time: "2026/08/04 13:42", id: "胡綵楹", change: "+7", note: "新增活動點數" },
+      { time: "2026/08/03 23:16", id: "許炳宏", change: "+19", note: "新增活動點數" },
+      { time: "2026/08/03 23:40", id: "文嘉", change: "+2", note: "新增活動點數" },
+      { time: "2026/08/02 17:28", id: "萱小魚", change: "+5", note: "新增活動點數" },
+      { time: "2026/07/31 20:06", id: "胡綵楹", change: "+7", note: "新增活動點數" },
+      { time: "2026/07/31 19:23", id: "藥膳家妤", change: "+5", note: "新增活動點數" },
+      { time: "2026/07/31 02:32", id: "Kevin 黃", change: "+1", note: "新增活動點數" },
+      { time: "2026/07/30 23:41", id: "許炳宏", change: "+12", note: "新增活動點數" },
+      { time: "2026/07/30 15:46", id: "文嘉", change: "+2", note: "新增活動點數" },
+      { time: "2026/07/23 17:35", id: "瑞玹", change: "+6", note: "新增活動點數" },
+      { time: "2026/07/23 23:43", id: "許炳宏", change: "+7", note: "新增活動點數" },
+      { time: "2026/07/22 23:24", id: "許炳宏", change: "+14", note: "新增活動點數" },
+      { time: "2026/07/22 07:49", id: "飛行荷蘭人", change: "+16", note: "新增活動點數" },
+      { time: "2026/07/21 23:35", id: "萱小魚", change: "+8", note: "新增活動點數" },
+      { time: "2026/07/21 02:01", id: "20", change: "+2", note: "新增活動點數" },
+      { time: "2026/07/20 00:03", id: "許炳宏", change: "+16", note: "新增活動點數" },
+      { time: "2026/07/20 00:03", id: "許炳宏", change: "-55", note: "兌換獎品 (正版 原神 胡桃幽靈 絨毛娃娃)" },
+      { time: "2026/07/19 21:08", id: "瑞玹", change: "+8", note: "新增活動點數" },
+      { time: "2026/07/09 18:07", id: "文嘉", change: "+12", note: "新增活動點數" },
+      { time: "2026/07/09 16:47", id: "瑞玹", change: "+9", note: "新增活動點數" },
+      { time: "2026/07/08 22:43", id: "許炳宏", change: "+7", note: "活動參與加點" }
+    ];
+
+    const escapeHtml = (value) => String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+    const leaderboard = document.querySelector("#leaderboard");
+    const podium = document.querySelector("#podium");
+    const topThree = data.slice(0, 3);
+
+    const podiumOrder = [
+      { index: 1, className: "second" },
+      { index: 0, className: "first" },
+      { index: 2, className: "third" }
+    ];
+
+    podium.innerHTML = podiumOrder.map(({ index, className }) => {
+      const item = topThree[index];
+      if (!item) return "";
+      return `
+        <article class="podium-card ${className}">
+          <div class="podium-rank">#${escapeHtml(item.rank)}</div>
+          <div class="podium-id">${escapeHtml(item.id)}</div>
+          <div class="podium-points">${escapeHtml(item.points)} 點</div>
+        </article>
+      `;
+    }).join("");
+
+    leaderboard.innerHTML = data.map(item => `
+      <article class="rank-row">
+        <div class="rank-number">#${escapeHtml(item.rank)}</div>
+        <div class="player-id">${escapeHtml(item.id)}</div>
+        <div class="player-points">${escapeHtml(item.points)} 點</div>
+      </article>
+    `).join("");
+
+    document.querySelector("#summaryLeader").textContent = data[0]?.id || "—";
+    document.querySelector("#summaryPlayers").textContent = `${data.length} 人`;
+    document.querySelector("#summaryPoints").textContent = data[0] ? `${data[0].points} 點` : "—";
+
+    const pointRecords = document.querySelector("#pointRecords");
+    pointRecords.innerHTML = pointLogs.map(log => {
+      const isMinus = String(log.change).trim().startsWith("-");
+      const changeClass = isMinus ? "minus" : "plus";
+      return `
+        <tr>
+          <td>${escapeHtml(log.time)}</td>
+          <td class="record-id">${escapeHtml(log.id)}</td>
+          <td class="record-change ${changeClass}">${escapeHtml(log.change)} 點</td>
+          <td class="record-note">${escapeHtml(log.note)}</td>
+        </tr>
+      `;
+    }).join("");
+
+    document.querySelector("#recordsCount").textContent = `${pointLogs.length} 筆紀錄`;
+  </script>
+</body>
+</html>
