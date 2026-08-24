@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7cf73" />
+  <meta name="description" content="超好超人機台位置：神之一甩 R3機台、夢幻城堡 左4機台。" />
+  <title>超好超人｜機台位置</title>
+  <style>
+    :root {
+      --yellow: #f7cf73;
+      --yellow-soft: #fff3cb;
+      --blue: #a8d9e1;
+      --blue-deep: #65b6c7;
+      --ink: #211f1b;
+      --muted: #6f6a61;
+      --paper: #fffdf8;
+      --white: #ffffff;
+      --border: rgba(33, 31, 27, 0.12);
+      --shadow: 0 18px 50px rgba(94, 67, 16, 0.14);
+      --radius-xl: 34px;
+      --radius-lg: 26px;
+      --radius-md: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #fff9ea;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
+        "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    a { color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    .site-shell {
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 6% 12%, rgba(255,255,255,.55) 0 4px, transparent 5px),
+        radial-gradient(circle at 92% 20%, rgba(255,255,255,.55) 0 5px, transparent 6px),
+        linear-gradient(180deg, var(--yellow) 0 47%, #fffaf0 47% 100%);
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 30;
+      padding-top: 18px;
+    }
+
+    .nav-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+      padding: 14px 18px 14px 22px;
+      border: 1px solid rgba(255,255,255,.75);
+      border-radius: 999px;
+      background: rgba(255,255,255,.91);
+      box-shadow: 0 12px 30px rgba(72, 51, 8, .10);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-size: 21px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--yellow-soft);
+      border: 2px solid var(--ink);
+      font-size: 22px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 850;
+      padding: 10px 13px;
+      border-radius: 999px;
+      transition: .2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: #d8f0f4;
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: .86fr 1.14fr;
+      align-items: center;
+      gap: 54px;
+      min-height: 520px;
+      padding: 74px 0 78px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 8px 20px rgba(90,64,9,.08);
+      font-weight: 900;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(54px, 7vw, 94px);
+      line-height: .98;
+      letter-spacing: .05em;
+      font-weight: 950;
+    }
+
+    .hero-copy p {
+      margin: 22px 0 0;
+      max-width: 530px;
+      color: #4a4439;
+      font-size: clamp(17px, 2vw, 22px);
+      line-height: 1.8;
+      font-weight: 700;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 50px;
+      padding: 0 22px;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 900;
+      box-shadow: 4px 5px 0 rgba(33,31,27,.13);
+      transition: .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 5px 7px 0 rgba(33,31,27,.13); }
+    .btn-primary { background: var(--blue); }
+    .btn-light { background: rgba(255,255,255,.82); }
+
+    .hero-art {
+      position: relative;
+      justify-self: end;
+      width: 100%;
+      max-width: 660px;
+      padding: 14px;
+      border-radius: 36px;
+      background: rgba(255,255,255,.45);
+      box-shadow: var(--shadow);
+      transform: rotate(-1deg);
+    }
+
+    .hero-art::before,
+    .hero-art::after {
+      content: "✦";
+      position: absolute;
+      font-size: 44px;
+      color: #fff8dc;
+      text-shadow: 0 2px 0 rgba(33,31,27,.15);
+    }
+    .hero-art::before { left: -34px; top: 20%; transform: rotate(-14deg); }
+    .hero-art::after { right: -28px; bottom: 10%; transform: rotate(12deg); }
+
+    .hero-art img {
+      width: 100%;
+      aspect-ratio: 1050 / 1474;
+      object-fit: cover;
+      border-radius: 26px;
+      border: 3px solid rgba(33,31,27,.75);
+      background: #f7cf73;
+    }
+
+    .locations-wave {
+      position: relative;
+      background: #fffaf0;
+      padding: 82px 0 70px;
+    }
+
+    .locations-wave::before {
+      content: "";
+      position: absolute;
+      left: -4%;
+      right: -4%;
+      top: -34px;
+      height: 72px;
+      background: #fffaf0;
+      border-radius: 50% 45% 0 0 / 100% 100% 0 0;
+    }
+
+    .section-head {
+      position: relative;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .section-head .kicker {
+      display: block;
+      color: var(--blue-deep);
+      font-size: 14px;
+      font-weight: 950;
+      letter-spacing: .22em;
+      margin-bottom: 8px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 52px);
+      letter-spacing: .08em;
+    }
+
+    .section-head p {
+      margin: 12px auto 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-weight: 650;
+    }
+
+    .machine-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .machine-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      background: var(--white);
+      box-shadow: var(--shadow);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .machine-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 24px 60px rgba(94, 67, 16, .18);
+    }
+
+    .machine-photo-wrap {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 16 / 10;
+      background: #f5efe1;
+    }
+
+    .machine-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .35s ease;
+    }
+
+    .machine-card:hover .machine-photo { transform: scale(1.025); }
+
+    .photo-label {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.91);
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 8px 20px rgba(0,0,0,.08);
+    }
+
+    .machine-body { padding: 24px 25px 26px; }
+
+    .machine-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .machine-title-row h3 {
+      margin: 0;
+      font-size: clamp(23px, 3vw, 30px);
+      line-height: 1.35;
+      letter-spacing: .03em;
+    }
+
+    .pin-badge {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: #d9f0f4;
+      font-size: 24px;
+    }
+
+    .address {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      margin: 18px 0 22px;
+      padding-top: 18px;
+      border-top: 2px dashed #b9e1e8;
+      color: #4a443d;
+      font-size: 16px;
+      line-height: 1.75;
+      font-weight: 700;
+    }
+
+    .map-btn {
+      width: fit-content;
+      border-color: rgba(33,31,27,.65);
+      background: var(--blue);
+      box-shadow: none;
+      min-height: 46px;
+      padding-inline: 18px;
+    }
+
+    .mini-features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .mini-feature {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.70);
+      color: #554f46;
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .footer {
+      padding: 28px 0 34px;
+      text-align: center;
+      color: #786f62;
+      font-size: 13px;
+      background: #fffaf0;
+    }
+
+    @media (max-width: 900px) {
+      .nav-card { border-radius: 28px; align-items: flex-start; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; gap: 34px; padding-top: 52px; }
+      .hero-copy { text-align: center; }
+      .hero-copy p { margin-inline: auto; }
+      .hero-actions { justify-content: center; }
+      .hero-art { justify-self: center; max-width: 560px; transform: none; }
+      .machine-grid { grid-template-columns: 1fr; }
+      .mini-features { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .container { width: min(100% - 22px, 1180px); }
+      .topbar { top: 7px; padding-top: 9px; }
+      .nav-card { padding: 10px 14px; }
+      .brand { font-size: 18px; }
+      .brand-mark { width: 36px; height: 36px; font-size: 18px; }
+      .hero { min-height: auto; padding: 42px 0 62px; }
+      .hero h1 { font-size: clamp(46px, 16vw, 68px); }
+      .hero-art { padding: 9px; border-radius: 26px; }
+      .hero-art img { border-radius: 20px; }
+      .locations-wave { padding-top: 64px; }
+      .machine-body { padding: 20px; }
+      .mini-features { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <div class="container">
+        <div class="nav-card">
+          <a class="brand" href="index.html" aria-label="回到首頁">
+            <span class="brand-mark" aria-hidden="true">✦</span>
+            <span>超好超人</span>
+          </a>
+
+          <nav class="nav-links" aria-label="主要導覽">
+            <a class="active" href="index.html">首頁</a>
+            <a href="#locations">機台位置</a>
+            <a href="shop.html">兌換商店</a>
+            <a href="moments.html">精彩時刻</a>
+            <a href="badge.html">徽章</a>
+            <a href="token.html">代幣</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="container hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <span class="eyebrow">歡迎來到 <span aria-hidden="true">♡</span></span>
+          <h1 id="hero-title">超好超人</h1>
+          <p>
+            可愛好禮等你帶回家！<br />
+            快來我們的機台，試試你的好運氣吧。
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#locations">📍 立即找機台</a>
+            <a class="btn btn-light" href="shop.html">🎁 看看兌換商店</a>
+          </div>
+        </div>
+
+        <div class="hero-art">
+          <img
+            src="assets/home/500737159_122180696822326608_3144273302568883498_n.jpg"
+            alt="超好超人插畫"
+          />
+        </div>
+      </section>
+
+      <section class="locations-wave" id="locations" aria-labelledby="locations-title">
+        <div class="container">
+          <div class="section-head">
+            <span class="kicker">MACHINE LOCATIONS</span>
+            <h2 id="locations-title">機台位置</h2>
+            <p>選一個離你最近的地點，現場挑戰機台，把喜歡的獎品帶回家！</p>
+          </div>
+
+          <div class="machine-grid">
+            <article class="machine-card">
+              <div class="machine-photo-wrap">
+                <img
+                  class="machine-photo"
+                  src="assets/machines/shen-r3.jpg"
+                  alt="神之一甩 R3機台照片"
+                  loading="lazy"
+                />
+                <span class="photo-label">神之一甩</span>
+              </div>
+              <div class="machine-body">
+                <div class="machine-title-row">
+                  <h3>神之一甩 R3機台</h3>
+                  <span class="pin-badge" aria-hidden="true">📍</span>
+                </div>
+                <div class="address">
+                  <span aria-hidden="true">🧭</span>
+                  <span>臺北市大安區建國南路一段30號</span>
+                </div>
+                <a
+                  class="btn map-btn"
+                  href="https://www.google.com/maps/search/?api=1&query=%E8%87%BA%E5%8C%97%E5%B8%82%E5%A4%A7%E5%AE%89%E5%8D%80%E5%BB%BA%E5%9C%8B%E5%8D%97%E8%B7%AF%E4%B8%80%E6%AE%B530%E8%99%9F"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  查看位置 ↗
+                </a>
+              </div>
+            </article>
+
+            <article class="machine-card">
+              <div class="machine-photo-wrap">
+                <img
+                  class="machine-photo"
+                  src="assets/machines/dream-castle-left4.jpg"
+                  alt="夢幻城堡 左4機台照片"
+                  loading="lazy"
+                />
+                <span class="photo-label">夢幻城堡</span>
+              </div>
+              <div class="machine-body">
+                <div class="machine-title-row">
+                  <h3>夢幻城堡 左4機台</h3>
+                  <span class="pin-badge" aria-hidden="true">📍</span>
+                </div>
+                <div class="address">
+                  <span aria-hidden="true">🧭</span>
+                  <span>臺北市中正區梅花里新生南路一段6-4號</span>
+                </div>
+                <a
+                  class="btn map-btn"
+                  href="https://www.google.com/maps/search/?api=1&query=%E8%87%BA%E5%8C%97%E5%B8%82%E4%B8%AD%E6%AD%A3%E5%8D%80%E6%A2%85%E8%8A%B1%E9%87%8C%E6%96%B0%E7%94%9F%E5%8D%97%E8%B7%AF%E4%B8%80%E6%AE%B56-4%E8%99%9F"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  立即前往 ↗
+                </a>
+              </div>
+            </article>
+          </div>
+
+          <div class="mini-features" aria-label="網站特色">
+            <div class="mini-feature">🎁 超多可愛好禮</div>
+            <div class="mini-feature">⭐ 定期更新獎品</div>
+            <div class="mini-feature">💗 夾中好禮超開心</div>
+            <div class="mini-feature">✨ 超好超人陪你一起玩</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">© 2026 超好超人 · 機台資訊以現場公告為準</div>
+    </footer>
+  </div>
+</body>
+</html>
