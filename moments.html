@@ -651,7 +651,31 @@
     }
 
     @media (max-width: 980px) {
-      .nav-links { display: none; }
+      .nav-card {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+        border-radius: 28px;
+      }
+    
+      .nav-links {
+        display: flex;
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+    
+      .nav-links::-webkit-scrollbar {
+        display: none;
+      }
+    
+      .nav-links a {
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
       .hero { grid-template-columns: 1fr; gap: 34px; padding-top: 52px; }
       .hero-copy { text-align: center; }
       .hero-copy p { margin-inline: auto; }
