@@ -782,16 +782,37 @@
 
     @media (max-width: 760px) {
       .topbar { position: static; }
+    
       .nav-card {
-        align-items: flex-start;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
         border-radius: 26px;
         padding: 15px;
       }
-
+    
       .brand { font-size: 18px; }
       .brand-mark { width: 38px; height: 38px; }
-      .nav-links { justify-content: flex-start; }
-      .nav-links a { padding: 8px 10px; font-size: 12px; }
+    
+      .nav-links {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+    
+      .nav-links::-webkit-scrollbar {
+        display: none;
+      }
+    
+      .nav-links a {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        padding: 8px 10px;
+        font-size: 12px;
+      }
 
       .hero { min-height: auto; padding: 42px 0 78px; }
       .hero h1 { font-size: clamp(42px,12vw,62px); }
@@ -824,8 +845,7 @@
 
     @media (max-width: 500px) {
       .container { width: min(100% - 20px,1180px); }
-      .nav-card { display: block; }
-      .nav-links { margin-top: 10px; }
+      .nav-card { padding: 12px; }
 
       .rule-card { grid-template-columns: 1fr; }
       .rule-badge-wrap { width: 88px; }
