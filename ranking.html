@@ -524,8 +524,31 @@
     }
 
     @media (max-width: 900px) {
-      .nav-card { border-radius: 28px; align-items: flex-start; }
-      .nav-links { display: none; }
+      .nav-card {
+        border-radius: 28px;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+      }
+    
+      .nav-links {
+        display: flex;
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+    
+      .nav-links::-webkit-scrollbar {
+        display: none;
+      }
+    
+      .nav-links a {
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
       .hero { grid-template-columns: 1fr; gap: 30px; padding-top: 52px; }
       .hero-copy { text-align: center; }
       .hero-copy p { margin-inline: auto; }
